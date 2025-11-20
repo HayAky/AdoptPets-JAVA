@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- AQUI VA THYMELEAF: xmlns:th="http://www.thymeleaf.org" -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome - Adoptpets</title>
+
+    <!-- AQUI VA THYMELEAF PARA RUTAS DE CSS -->
+    <!-- Antes: {{ asset('css/welcome.css') }} -->
+    <link rel="stylesheet" href="<!-- th:href='@{/css/welcome.css}' -->">
+</head>
+
+<body>
+
+<section id="adoptpets">
+    <div class="img-contenedor">
+        <h1>AdoptPets</h1>
+        <p>Adopta a tu alma gemela</p>
+
+        <div class="botones-principales"></div>
+
+        <div class="botonesnoticias">
+            <a href="register" class="boton-principal">Comenzar Adopción</a>
+            <a href="#noticias" class="boton-secundario">Ver Noticias</a>
+
+            <a href="dashboard" class="boton-principal">Mi Dashboard</a>
+            <a href="#noticias" class="boton-secundario">Ver Noticias</a>
+        </div>
+    </div>
+</section>
+
+<section id="noticias">
+    <div class="contenedor-noticias">
+        <h2 class="titulo-principal">Actualidad sobre adopción</h2>
+
+        <div class="noticias-grid">
+
+            <div class="columna-izquierda">
+
+                <!-- NOTICIA PRINCIPAL -->
+                <div class="noticia-principal">
+                    <h3>Día Internacional de los Animales Callejeros: Mejor futuro para los abandonados</h3>
+
+                    <p>
+                        El Día Internacional de los Animales Callejeros, celebrado cada 4 de abril, busca concientizar sobre la difícil
+                        situación de millones de animales abandonados en el mundo...
+                    </p>
+
+                    <!-- AQUI VA THYMELEAF PARA IMAGEN -->
+                    <!-- Antes: {{ asset('images/Wel_adopcion-virtual-animales.jpg') }} -->
+                    <img src="<!-- th:src='@{/images/Wel_adopcion-virtual-animales.jpg}' -->"
+                         alt="Noticia animales callejeros" />
+
+                    <p>
+                        La adopción es una solución clave [...]
+                    </p>
+
+                    <div class="hashtags">
+                        #AdoptaNoCompres #DíaDeLosAnimalesCallejeros
+                    </div>
+                </div>
+
+                <!-- CONTENIDO ADICIONAL 1 -->
+                <div class="noticia-principal">
+                    <h3>¿Por qué adoptar una mascota? 7 razones para considerarlo</h3>
+
+                    <img src="<!-- th:src='@{/images/perrosygatos.png}' -->"
+                         alt="Perros y gatos para adopción" />
+
+                    <p class="element-salvas-una-vida">
+                        1. Salvas una vida...
+                    </p>
+
+                    <a href="https://elcomercio.pe/wuf/consultorio/adoptar-mascota-7-razones-considerarlo-252458-noticia/?ref=ecr"
+                       class="link-fuente" target="_blank">
+                        Fuente: El Comercio
+                    </a>
+                </div>
+
+                <!-- CONTENIDO ADICIONAL 2 -->
+                <div class="noticia-principal">
+                    <h3>¿Debería esterilizar a mi perro o gato adoptado?</h3>
+
+                    <p>
+                        Adoptar una mascota es una gran responsabilidad...
+                    </p>
+
+                    <img src="<!-- th:src='@{/images/Esterilizar_mascotas.png}' -->"
+                         alt="Esterilización de mascotas" />
+
+                    <p>
+                        Uno de los principales beneficios de esterilizar...
+                    </p>
+
+                    <a href="https://www.adoptahoy.com/post/deber%C3%ADa-esterilizar-a-mi-perro-o-gato-adoptado"
+                       class="link-fuente" target="_blank">
+                        Fuente: AdoptaHoy
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA -->
+            <div class="noticias-secundarias">
+                <h3 class="titulo-secundarias">También podría interesarte:</h3>
+
+                <div class="noticia-card">
+                    <h4>Jornada de adopción el 5 de abril de 2025</h4>
+                    <p>El IDPYBA realizó una jornada [...].</p>
+                    <a href="https://bogota.gov.co/mi-ciudad/ambiente/jornada-de-adopcion-de-perros-y-gatos-en-bogota-5-de-abril-de-2025"
+                       class="link-noticia">Leer más</a>
+                </div>
+
+                <!-- RESTO DE TARJETAS (SIN PHP: NO SE MODIFICAN) -->
+                <!-- ... -->
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="error">
+        <a href="/error404" class="nav-link">Error de pagina</a>
+    </div>
+</section>
+
+</body>
+</html>

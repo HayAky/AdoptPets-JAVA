@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title th:text="${title} ?: 'AdoptPets'"></title>
+
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/app.css}">
+
+        <th:block th:replace="${extraCss}"></th:block>
+    </head>
+
+    <body th:class="${bodyClass}">
+        <header>
+            <div class="contenedor">
+                <a th:href="@{/}" class="logo">
+                    <img th:src="@{/images/AdoptPets.png}" alt="logo de la pagina">
+                </a>
+
+                <input type="checkbox" id="menu-toggle">
+                <label for="menu-toggle" class="menu-icon">☰</label>
+
+                <nav>
+                    <a th:href="@{/quienes-somos}" class="nav-link">¿Quienes somos?</a>
+                    <a th:href="@{/blog}" class="nav-link">Blog</a>
+                    <a th:href="@{/contactanos}" class="nav-link">Contáctanos</a>
+
+                    <a th:if="${#authentication.principal != null}"
+                       th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+
+                    <span th:if="${#authentication.principal == null}">
+                        <a th:href="@{/register}" class="boton">Registrarse</a>
+                        <a th:href="@{/login}" class="boton">Iniciar sesión</a>
+                    </span>
+                </nav>
+            </div>
+        </header>
+
+        <main layout:fragment="content"></main>
+
+        <footer class="footer">
+            <div class="contenedor">
+                <div class="footer-content">
+
+                    <div class="footer-section">
+                        <h3>Síguenos en nuestras redes sociales</h3>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-section">
+                        <div class="contact-info">
+                            <p><i class="fas fa-phone"></i> Teléfono: 239812910010</p>
+                            <p><i class="fas fa-envelope"></i> Correo: adoptpets@example.com</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Dirección: Calle 156 # 58-26 Bogotá-Colombia</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="footer-bottom">
+                    <p>AdoptPets © 2025</p>
+                </div>
+            </div>
+        </footer>
+
+    </body>
+</html>
