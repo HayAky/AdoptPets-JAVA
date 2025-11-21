@@ -1,0 +1,270 @@
+/* Reset y configuración base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+body {
+  background: #f1fdf5;
+  font-family: 'Noto Sans', sans-serif;
+  min-height: 100vh;
+}
+
+/* Botones globales */
+button {
+  border-radius: 20px;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+  background-color: #22C55E;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #1B9E4B;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+}
+
+
+/* Container de login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px;
+  gap: 60px;
+  min-height: calc(100vh - 100px);
+}
+
+/* Formulario de login */
+.login-formulario {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-formulario h1 {
+  color: #22C55E;
+  font-size: 28px;
+  text-align: left;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.login-formulario h2 {
+  color: #1B9E4B;
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.login-formulario p {
+  margin: 15px 0 25px 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Inputs del formulario */
+.login-formulario form input[type="email"],
+.login-formulario form input[type="password"],
+.login-formulario form input[type="text"] {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.login-formulario form input:focus {
+  outline: none;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Checkbox recordar */
+.recordar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.login-formulario input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  accent-color: #22C55E;
+}
+
+.recordar label {
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
+
+/* Botón de envío */
+.login-formulario button {
+  width: 100%;
+  background-color: #22C55E;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Enlaces adicionales */
+.login-opciones {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.olvido-password,
+.registro-link {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.olvido-password a,
+.registro-link a {
+  color: #22C55E;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.olvido-password a:hover,
+.registro-link a:hover {
+  color: #1B9E4B;
+  text-decoration: underline;
+}
+
+/* Imagen de login */
+.login-imagen {
+  flex-shrink: 0;
+}
+
+.login-imagen img {
+  width: 400px;
+  height: 500px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Mensajes de error y éxito */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  border: 1px solid #86efac;
+  color: #16a34a;
+}
+
+.alert ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 30px;
+  }
+
+  .login-formulario {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px 25px;
+  }
+
+  .login-formulario h1 {
+    display: none;
+  }
+
+  .login-formulario h2 {
+    font-size: 22px;
+  }
+
+  .login-formulario p {
+    font-size: 16px;
+  }
+
+  .login-imagen {
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-imagen img {
+    width: 90%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 20px 15px;
+  }
+
+  .login-formulario {
+    padding: 25px 20px;
+  }
+
+  .login-formulario form input {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .login-formulario button {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .login-imagen img {
+    width: 80%;
+    max-width: 250px;
+  }
+}

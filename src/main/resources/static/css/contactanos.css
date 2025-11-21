@@ -1,0 +1,180 @@
+
+/* Contact section styles */
+.texto2 {
+    padding-top: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #137035;
+}
+
+.texto3 li {
+    font-size: 20px;
+    color: #051B0D;
+}
+
+#contactanos h2 {
+    font-size: 38px;
+    padding: 10px;
+    color: #137035;
+}
+
+#contactanos p {
+    font-size: 25px;
+    color: #051B0D;
+}
+
+#contactanos .contenedor {
+    max-width: 100%;
+    background-color: #D3F3DC;
+    display: flex;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    margin-top: 20px;
+    margin-left: 90px;
+    margin-right: 90px;
+    text-align: center;
+    padding: 20px 100px;
+    padding-bottom: 80px;
+}
+
+.textocontacto {
+    justify-content: center;
+    text-align: left;
+    padding-right: 100px;
+}
+
+.formulario {
+    align-items: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #ffffff;
+    width: 100%;
+    margin: auto;
+    border-radius: 40px;
+}
+
+.nombresfila {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+.campo {    
+    flex-direction: column;
+    max-width: 100%;
+    margin-bottom: 8px;
+    display: flex;
+    padding: 7px 50px;
+}
+
+.campo label {
+    text-align: left;
+    padding-bottom: 10px;
+    font-weight: 600;
+    color: #137035;
+}
+
+.campo input,
+.campo textarea {
+    width: 100%;
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+#mensaje {
+    padding: 60px;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.botonenviar {
+    display: flex;
+    justify-content: center;
+    padding: 0 50px;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    /* Mobile styles for contact section */
+    #contactanos {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .formulario {
+        background-color: #D3F3DC;
+    }
+
+    #contactanos .contenedor {
+        text-align: center;
+        padding: 30px;
+        margin: 0;
+        flex-direction: column;
+        padding-bottom: 80px;
+    }
+
+    #contactanos h2 {
+        font-size: 38px;
+        padding: 10px;
+    }
+
+    #contactanos p {
+        text-align: center;
+        font-size: 25px;
+    }
+
+    .textocontacto {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        padding: 0;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .campo {
+        align-items: flex-start;
+        max-width: 100%;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        padding: 7px 10px;
+    }
+
+    .nombresfila {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .nombresfila .campo {
+        display: flex;
+    }
+
+    .campo label {
+        text-align: left;
+        padding-bottom: 10px;
+    }
+
+    .campo input,
+    .campo textarea {
+        width: 100%;
+        padding: 14px;
+    }
+    
+    .botonenviar {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        font-size: 16px;
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Estilos adicionales para pantallas muy pequeñas si son necesarios */
+}
