@@ -10,34 +10,45 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/welcome", " /login", "/registro", "/css/**", "/js/**", "/img/**").permitAll()
-                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers("/perfil/**").authenticated()
+                        .requestMatchers(
+                                "/",
+                                "/main",
+                                "/register",
+                                "/login",
+                                "/about",
+                                "/contacto",
+                                "/adoptar",
+                                "/css/**",
+                                "/js/**",
+                                "/img/**"
+                        ).permitAll()
+                        .requestMatchers("/usuarios/**").hasRole("ADMIN")  // ← Cambiado
+                        .requestMatchers("/perfil").authenticated()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form ->form
+                .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
+                        .usernameParameter("email")
+                        .defaultSuccessUrl("/main", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
-                .logout(logout ->logout
+                .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((request, response, accesDeniedException)->{
-                            response.sendRedirect("/login?denied");
-                        })
-                )
-                .sessionManagement(session ->session
+                .sessionManagement(session -> session
                         .invalidSessionUrl("/login?expired")
                         .maximumSessions(1)
                         .expiredUrl("/login?expired")
                 );
+
         return http.build();
     }
 

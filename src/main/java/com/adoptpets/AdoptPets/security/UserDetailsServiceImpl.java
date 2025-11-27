@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.List;
 import com.adoptpets.AdoptPets.model.Usuario;
 import com.adoptpets.AdoptPets.repository.UsuarioRepository;
 
@@ -17,14 +18,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String correo) throws
-            UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmail(correo)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado" + correo));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + correo));
+
+        if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
+            throw new UsernameNotFoundException("Usuario sin roles asignados: " + correo);
+        }
+
+        List<SimpleGrantedAuthority> authorities = usuario.getRoles().stream()
+                .map(rol -> new SimpleGrantedAuthority(rol.getNombreRol()))
+                .collect(Collectors.toList());
+
         return new User(
                 usuario.getEmail(),
                 usuario.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol()))
+                usuario.getActivo(), // enabled
+                true, // accountNonExpired
+                true, // credentialsNonExpired
+                true, // accountNonLocked
+                authorities
         );
     }
 }

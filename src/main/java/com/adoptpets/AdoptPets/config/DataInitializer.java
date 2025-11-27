@@ -10,30 +10,62 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 public class DataInitializer {
+
     @Bean
-    public CommandLineRunner initDatabase(UsuarioRepository repo, RolRepository rolRepo) {
+    public CommandLineRunner initDatabase(UsuarioRepository usuarioRepo, RolRepository rolRepo) {
         return args -> {
-            if(repo.findByEmail("admin@mail.com").isEmpty()){
-                Rol rolAdmin = rolRepo.findByNombreRol("administrador")
-                        .orElseThrow();
+
+            // 1. BUSCAR O CREAR EL ROL "ROLE_ADMIN"
+            Rol rolAdmin = rolRepo.findByNombreRol("ROLE_ADMIN").orElseGet(() -> {
+                Rol nuevoRol = new Rol();
+                nuevoRol.setNombreRol("ROLE_ADMIN");
+                nuevoRol.setDescripcion("Usuario con permisos completos del sistema");
+                return rolRepo.save(nuevoRol);
+            });
+
+            // 2. BUSCAR O CREAR EL ROL "ROLE_ADOPTANTE"
+            Rol rolAdoptante = rolRepo.findByNombreRol("ROLE_ADOPTANTE").orElseGet(() -> {
+                Rol nuevoRol = new Rol();
+                nuevoRol.setNombreRol("ROLE_ADOPTANTE");
+                nuevoRol.setDescripcion("Personas interesadas en adoptar mascotas");
+                return rolRepo.save(nuevoRol);
+            });
+
+            // 3. BUSCAR O CREAR EL ROL "ROLE_REFUGIO"
+            Rol rolRefugio = rolRepo.findByNombreRol("ROLE_REFUGIO").orElseGet(() -> {
+                Rol nuevoRol = new Rol();
+                nuevoRol.setNombreRol("ROLE_REFUGIO");
+                nuevoRol.setDescripcion("Organizaciones que cuidan mascotas para adopción");
+                return rolRepo.save(nuevoRol);
+            });
+
+            // 4. CREAR EL USUARIO ADMIN (Solo si no existe)
+            if (usuarioRepo.findByEmail("admin@mail.com").isEmpty()) {
                 Usuario admin = new Usuario();
-                admin.setNombre("admin");
-                admin.setApellido("admin");
+                admin.setNombre("Admin");
+                admin.setApellido("Principal");
                 admin.setCedula("000000");
                 admin.setCiudad("Bogota");
                 admin.setDireccion("N/A");
-                admin.setFechaNacimiento(LocalDate.of(1989, 12, 12));
+                admin.setFechaNacimiento(LocalDate.of(1990, 1, 1));
                 admin.setActivo(true);
                 admin.setEmail("admin@mail.com");
-                admin.setPassword(new BCryptPasswordEncoder().encode("12345678"));
-                admin.setRol(rolAdmin);
-                repo.save(admin);
-                System.out.println("Usuario admin creado con exito");
-            }else {
-                System.out.println("Usuario admin ya existe");
+                admin.setPassword(new BCryptPasswordEncoder().encode("andrescasti"));
+
+                // Asignar rol ROLE_ADMIN
+                Set<Rol> roles = new HashSet<>();
+                roles.add(rolAdmin);
+                admin.setRoles(roles);
+
+                usuarioRepo.save(admin);
+                System.out.println("--> Usuario 'admin@mail.com' creado con rol ROLE_ADMIN.");
+            } else {
+                System.out.println("--> El usuario admin ya existe.");
             }
         };
     }

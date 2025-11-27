@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <title>Iniciar sesión - AdoptPets</title>
-    <link rel="stylesheet" href="login.css">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
 </head>
 <body>
 <header>
     <div class="contenedor">
-        <a href="tarea.html" class="logo">
-            <img src="/media/AdoptPets.png" alt="logo de la pagina">
+        <a th:href="@{/main}" class="logo">
+            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
         </a>
         <nav>
             <a href="" class="nav-link">Adoptar</a>
             <a href="" class="nav-link">Refugios</a>
-            <a href="#contactanos" class="nav-link">Contactanos</a>
-            <a href="login.html" class="boton">Iniciar sesion</a>
+            <a th:href="@{/contactanos}" class="nav-link">Contactanos</a>
+            <a th:href="@{/login}" class="boton">Iniciar sesion</a>
         </nav>
     </div>
 </header>
@@ -27,23 +27,33 @@
         <h2>¡Bienvenido!</h2>
         <p>Inicie sesión para empezar a adoptar,<br>si no tienes cuenta puedes registrarte</p>
 
-        <form>
-            <input type="text" placeholder="Nombre de usuario" required>
-            <input type="password" placeholder="Contraseña" required>
+        <form method="post" th:action="@{/login}">
+            <label for="email">Usuario</label>
+            <input type="email" name="email" id="email" placeholder="Correo Electronico" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Contraseña" required>
 
             <div class="recordar">
-                <input type="checkbox" id="recordar" required>
+                <input type="checkbox" id="recordar" name="recordar" required>
                 <label for="recordar">Recordar contraseña</label>
             </div>
 
             <button type="submit">Iniciar sesión</button>
         </form>
 
-        <p class="registro-link">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+        <div th:if="${param.error}">
+            <p style="color:red;">Usuario o contraseña incorrectos</p>
+        </div>
+
+        <div th:if="${param.logout}" style="color:green; margin-top: 10px;">
+            <p>Has cerrado sesión exitosamente</p>
+        </div>
+
+        <p class="registro-link">¿No tienes cuenta? <a th:href="@{/register}">Regístrate</a></p>
     </div>
 
     <div class="login-imagen">
-        <img src="/media/mascota_viento.webp" alt="Perro feliz">
+        <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz">
     </div>
 </section>
 </body>

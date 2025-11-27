@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - AdoptPets</title>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link th:href="@{/css/register.css}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="contenedor">
+        <a th:href="@{/main}" class="logo">
+            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
+        </a>
+        <nav>
+            <a href="" class="nav-link">Adoptar</a>
+            <a href="" class="nav-link">Refugios</a>
+            <a href="#contactanos" class="nav-link">Contactanos</a>
+            <a href="login.html" class="boton">Iniciar sesion</a>
+        </nav>
+    </div>
+</header>
+<section class="registro-container">
+    <div class="registro-formulario">
+        <h1>AdoptPets</h1>
+        <h2>CREAR CUENTA</h2>
+        <p>Regístrate para encontrar y adoptar a tu nuevo amigo</p>
+
+        <form method="post" th:action="@{/register}" th:object="${usuario}">
+            <div class="fila">
+                <input type="text" th:field="*{nombre}" required>
+                <input type="text" th:field="*{apellido}" placeholder="Apellido" required>
+            </div>
+            <div class="fila">
+                <input type="email" th:field="*{email}" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="fila">
+                <input type="password" th:field="*{password}" placeholder="Contraseña" required minlength="8">
+            </div>
+            <div class="fila">
+                <input type="text" th:field="*{direccion}" placeholder="Dirección">
+                <input type="text" th:field="*{telefono}" placeholder="Teléfono">
+            </div>
+            <div class="fila">
+                <select required>
+                    <option disabled selected>Tipo de doc...</option>
+                    <option value="cc">C.C.</option>
+                    <option value="cc">C.E.</option>
+                    <option value="ti">T.I.</option>
+                    <option value="cc">P.P.</option>
+                </select>
+                <input type="text" th:field="*{cedula}" placeholder="Número de documento">
+            </div>
+            <div class="fila">
+                <input type="date" th:field="*{fechaNacimiento}" required placeholder="Fecha de nacimiento">
+            </div>
+
+            <button type="submit">Registrarse</button>
+
+            <div class="terminos">
+                <input type="checkbox" id="terminos" required>
+                <label for="terminos">Acepta Términos y condiciones</label>
+            </div>
+        </form>
+        <p class="login-link">¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
+    </div>
+
+    <div class="registro-imagen">
+        <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz en auto">
+    </div>
+</section>
+</body>
+</html>

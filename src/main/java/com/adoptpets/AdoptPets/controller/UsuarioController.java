@@ -1,6 +1,8 @@
 package com.adoptpets.AdoptPets.controller;
 
+import com.adoptpets.AdoptPets.model.Rol;
 import com.adoptpets.AdoptPets.model.Usuario;
+import com.adoptpets.AdoptPets.repository.RolRepository;
 import com.adoptpets.AdoptPets.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,44 +11,48 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+
 @Controller
 public class UsuarioController {
     @Autowired
     private UsuarioRepository repo;
+    @Autowired
+    private RolRepository rolRepository;
 
-    @GetMapping("/")
-    public String redireccionarRaiz(){
-        return "redirect:/welcome";
-    }
-
-    @GetMapping("/welcome")
-    public String welcome(){
-    return "welcome";
-    }
 
     @GetMapping("/login")
     public String login(){
         return "login";
     }
 
-    @GetMapping("registro")
+    @GetMapping("/register")
     public String formularioRegistro(Model model){
         model.addAttribute("usuario", new Usuario());
-        return "registro";
+        return "register";
     }
 
-    @PostMapping("/registro")
-    public String registrar(@ModelAttribute Usuario usuario){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @PostMapping("/register")
+    public String registrar(@ModelAttribute("usuario") Usuario usuario, Model model) {
+        if (repo.existsByEmail(usuario.getEmail())) {
+            model.addAttribute("error", "El email ya existe");
+            return "register";
+        }
+
         usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+
+        Rol rolUsuario = rolRepository.findByNombreRol("ROLE_ADOPTANTE")
+                        .orElseThrow(() -> new RuntimeException("Rol por defecto no encontrado"));
+
+        Set<Rol> roles = new HashSet<>();
+        roles.add(rolUsuario);
+        usuario.setRoles(roles);
+
         repo.save(usuario);
         return "redirect:/login";
-    }
-
-    @GetMapping("/home")
-    public String home(Model model, Authentication auth){
-        model.addAttribute("rol", auth.getAuthorities().toString());
-        return "home";
     }
 
     @GetMapping("/perfil")
@@ -56,6 +62,4 @@ public class UsuarioController {
         model.addAttribute("usuario", usuario);
         return "form";
     }
-
-
 }
