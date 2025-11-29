@@ -6,21 +6,11 @@
     <title>Registro - AdoptPets</title>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <link th:href="@{/css/register.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
 </head>
 <body>
-<header>
-    <div class="contenedor">
-        <a th:href="@{/main}" class="logo">
-            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
-        </a>
-        <nav>
-            <a href="" class="nav-link">Adoptar</a>
-            <a href="" class="nav-link">Refugios</a>
-            <a href="#contactanos" class="nav-link">Contactanos</a>
-            <a href="login.html" class="boton">Iniciar sesion</a>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <section class="registro-container">
     <div class="registro-formulario">
         <h1>AdoptPets</h1>
@@ -71,5 +61,6 @@
         <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz en auto">
     </div>
 </section>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
 </body>
 </html>

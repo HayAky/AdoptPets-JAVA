@@ -6,22 +6,12 @@
     <title>AdoptPets</title>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
 
 </head>
 <body>
-<header>
-    <div class="contenedor">
-        <a th:href="@{/main}" class="logo">
-            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
-        </a>
-        <nav>
-            <a href="" class="nav-link">Adoptar</a>
-            <a href="" class="nav-link">Refugios</a>
-            <a th:href="contactanos" class="nav-link">Contactanos</a>
-            <a th:href="@{/login}" class="boton">Iniciar sesion</a>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <section id="adoptpets">
     <div class="img-contenedor">
         <h1>AdoptPets</h1>
@@ -47,12 +37,11 @@
                 <li>Correo: adopttpetts@example.com</li>
             </ul>
         </div>
+        <div class="error">
+            <a th:href="@{/error404.html}" class="nav-link">Error de pagina</a>
+        </div>
     </div>
 </section>
-<section id="error">
-    <div class="error">
-        <a th:href="@{/error404.html}" class="nav-link">Error de pagina</a>
-    </div>
-</section>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
 </body>
 </html>

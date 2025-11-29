@@ -6,21 +6,11 @@
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <title>Iniciar sesión - AdoptPets</title>
     <link th:href="@{/css/login.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
 </head>
 <body>
-<header>
-    <div class="contenedor">
-        <a th:href="@{/main}" class="logo">
-            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
-        </a>
-        <nav>
-            <a href="" class="nav-link">Adoptar</a>
-            <a href="" class="nav-link">Refugios</a>
-            <a th:href="@{/contactanos}" class="nav-link">Contactanos</a>
-            <a th:href="@{/login}" class="boton">Iniciar sesion</a>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <section class="login-container">
     <div class="login-formulario">
         <h1>AdoptPets</h1>
@@ -28,11 +18,8 @@
         <p>Inicie sesión para empezar a adoptar,<br>si no tienes cuenta puedes registrarte</p>
 
         <form method="post" th:action="@{/login}">
-            <label for="email">Usuario</label>
             <input type="email" name="email" id="email" placeholder="Correo Electronico" required>
-            <label for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Contraseña" required>
-
             <div class="recordar">
                 <input type="checkbox" id="recordar" name="recordar" required>
                 <label for="recordar">Recordar contraseña</label>
@@ -56,5 +43,6 @@
         <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz">
     </div>
 </section>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

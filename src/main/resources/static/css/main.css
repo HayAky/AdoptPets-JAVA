@@ -27,62 +27,10 @@ button:hover{
     background-color: #1B9E4B;
 }
 
-
-header {
-    background-color: rgba(255, 255, 255, 0);
-    position: sticky;
-    top: 0;
-    background-color: rgba(255, 255, 255, 0,1);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0,1);
-}
-
-header .logo img {
-    width: 130px;
-    height: auto;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-}
-
 .contenedor {
     max-width: 1400px;
     margin:auto;
 }
-
-header .contenedor{
-    padding: 40px 100px;
-    align-items: center;
-    justify-content: space-between;
-    display: flex;
-    margin: auto;
-    max-width: 100%;
-}
-
-nav{
-    display: flex;
-    gap: 80px;
-    flex-direction:row;
-    padding-right: 10px;
-    flex-grow: 1;
-}
-
-header a{
-    padding: 3px 5px;
-    font-weight: 600;
-    font-size: 18px;
-    color: #22C55E;
-    text-decoration: none;
-}
-
-header a:hover{
-    color: #1B9E4B;
-}
-
-nav a:hover{
-    color: #1B9E4B;
-}
-
 .boton {
     border-radius: 20px;
     padding: 10px 12px;
@@ -167,14 +115,10 @@ nav a:hover{
     max-width: 100%;
     background-color: #D3F3DC;
     display: flex;
-    border-top-left-radius: 50px;
-    border-top-right-radius: 50px;
-    margin-top: 100px;
-    margin-left: 90px;
-    margin-right: 90px;
+    border-radius: 50px;
+    margin: 100px 90px;
     text-align: center;
-    padding: 20px 100px;
-    padding-bottom: 80px;
+    padding: 20px 100px 80px;
 
 }
 
