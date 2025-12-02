@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <title>Iniciar sesión - AdoptPets</title>
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<section class="login-container">
+    <div class="login-formulario">
+        <h1>AdoptPets</h1>
+        <h2>¡Bienvenido!</h2>
+        <p>Inicie sesión para empezar a adoptar,<br>si no tienes cuenta puedes registrarte</p>
+
+        <form method="post" th:action="@{/login}">
+            <input type="email" name="email" id="email" placeholder="Correo Electronico" required>
+            <input type="password" name="password" id="password" placeholder="Contraseña" required>
+            <div class="recordar">
+                <input type="checkbox" id="recordar" name="recordar" required>
+                <label for="recordar">Recordar contraseña</label>
+            </div>
+
+            <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <div th:if="${param.error}">
+            <p style="color:red;">Usuario o contraseña incorrectos</p>
+        </div>
+
+        <div th:if="${param.logout}" style="color:green; margin-top: 10px;">
+            <p>Has cerrado sesión exitosamente</p>
+        </div>
+
+        <p class="registro-link">¿No tienes cuenta? <a th:href="@{/register}">Regístrate</a></p>
+    </div>
+
+    <div class="login-imagen">
+        <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz">
+    </div>
+</section>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

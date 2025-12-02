@@ -1,0 +1,13 @@
+<header th:fragment="~{header}">
+    <div class="contenedor">
+        <a th:href="@{/main}" class="logo">
+            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
+        </a>
+        <nav>
+            <a href="" class="nav-link">Adoptar</a>
+            <a href="" class="nav-link">Refugios</a>
+            <a th:href="contactanos" class="nav-link">Contactanos</a>
+            <a th:href="@{/login}" class="boton">Iniciar sesion</a>
+        </nav>
+    </div>
+</header>
