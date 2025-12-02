@@ -33,7 +33,7 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         // Estadísticas generales
-        Long totalMascotas = mascotaService.listarTodas().size();
+        Long totalMascotas = (long) mascotaService.listarTodas().size();
         Long mascotasDisponibles = (long) mascotaService.listarDisponibles().size();
         Long adopcionesPendientes = adopcionService.contarPorEstado(EstadoAdopcion.PENDIENTE);
         Long adopcionesCompletadas = adopcionService.contarPorEstado(EstadoAdopcion.COMPLETADA);
@@ -92,6 +92,24 @@ public class AdminController {
     public String rechazarAdopcion(@PathVariable Long id, @RequestParam String motivo) {
         adopcionService.rechazar(id, motivo);
         return "redirect:/admin/adopciones";
+    }
+
+    @PostMapping("/adopciones/{id}/completar")
+    public String completarAdopcion(@PathVariable Long id) {
+        adopcionService.completar(id);
+        return "redirect:/admin/adopciones";
+    }
+
+    @PostMapping("/mascotas/guardar")
+    public String guardarMascota(@ModelAttribute("mascota") com.adoptpets.AdoptPets.model.Mascota mascota) {
+        mascotaService.guardar(mascota);
+        return "redirect:/admin/mascotas";
+    }
+
+    @PostMapping("/mascotas/{id}/eliminar")
+    public String eliminarMascota(@PathVariable Long id) {
+        mascotaService.eliminar(id);
+        return "redirect:/admin/mascotas";
     }
 
     @GetMapping("/refugios")
