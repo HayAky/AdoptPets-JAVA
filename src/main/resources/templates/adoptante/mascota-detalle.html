@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${mascota.nombre} + ' - AdoptPets'">Detalle Mascota</title>
+</head>
+<body>
+
+
+<div class="layout">
+
+    <main class="main-content">
+        <div class="top-bar">
+            <h1 th:text="'Conoce a ' + ${mascota.nombre}">Detalle de Mascota</h1>
+            <a th:href="@{/adoptante/mascotas}" class="back-btn">← Volver</a>
+        </div>
+
+        <div class="pet-detail-container">
+            <div class="pet-header">
+                <div>
+                    <img class="pet-image"
+                         th:src="@{${mascota.fotos != null && !mascota.fotos.isEmpty() ?
+                                        mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                         th:alt="${mascota.nombre}">
+                </div>
+
+                <div class="pet-info-section">
+                    <h1 th:text="${mascota.nombre}">Luna</h1>
+
+                    <div class="badges-section">
+                        <span th:if="${mascota.vacunado}" class="badge badge-vacunado">✓ Vacunado</span>
+                        <span th:if="${mascota.esterilizado}" class="badge badge-esterilizado">✓ Esterilizado</span>
+                        <span th:if="${mascota.microchip}" class="badge badge-microchip">✓ Microchip</span>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Especie</strong>
+                            <span th:text="${mascota.especie}">Perro</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Raza</strong>
+                            <span th:text="${mascota.raza}">Mestizo</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Edad Aproximada</strong>
+                            <span th:text="${mascota.edadAproximada + ' años'}">2 años</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Sexo</strong>
+                            <span th:text="${mascota.sexo}">Hembra</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Tamaño</strong>
+                            <span th:text="${mascota.tamano}">Mediano</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Peso</strong>
+                            <span th:text="${mascota.peso != null ? mascota.peso + ' kg' : 'No especificado'}">15.5 kg</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Color</strong>
+                            <span th:text="${mascota.color}">Negro con blanco</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Refugio</strong>
+                            <span th:text="${mascota.refugio?.nombreRefugio}">Refugio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pet-description">
+                <h2>Descripción</h2>
+                <p th:text="${mascota.descripcion}">Descripción de la mascota...</p>
+            </div>
+
+            <div class="pet-description" th:if="${mascota.estadoSalud != null}">
+                <h2>Estado de Salud</h2>
+                <p th:text="${mascota.estadoSalud}">Estado de salud...</p>
+            </div>
+
+            <div class="adoption-form-section">
+                <h2>Solicitar Adopción</h2>
+                <form method="post" th:action="@{/adoptante/solicitar-adopcion/{id}(id=${mascota.idMascota})}">
+
+                    <div class="form-group">
+                        <label for="observaciones">¿Por qué quieres adoptar a <span th:text="${mascota.nombre}">esta mascota</span>?</label>
+                        <textarea id="observaciones" name="observaciones"
+                                  placeholder="Cuéntanos sobre tu hogar, experiencia con mascotas, y por qué sería un buen hogar para esta mascota..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">
+                            💚 Enviar Solicitud de Adopción
+                        </button>
+                        <a th:href="@{/adoptante/mascotas}" class="cancel-btn">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

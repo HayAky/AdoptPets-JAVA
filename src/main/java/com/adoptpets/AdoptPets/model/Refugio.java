@@ -1,10 +1,7 @@
 package com.adoptpets.AdoptPets.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -13,7 +10,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "refugios")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 

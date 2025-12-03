@@ -21,13 +21,7 @@ public class BlogService {
         return blogRepository.findByActivoTrueOrderByFechaPublicacionDesc();
     }
 
-    public List<Blog> listarPorCategoria(CategoriaBlog categoria) {
-        return blogRepository.findByCategoriaAndActivoTrue(categoria);
-    }
 
-    public List<Blog> masVisitados() {
-        return blogRepository.findMasVisitados();
-    }
 
     public Optional<Blog> buscarPorId(Long id) {
         return blogRepository.findById(id);
@@ -47,7 +41,4 @@ public class BlogService {
         blogRepository.save(blog);
     }
 
-    public List<Blog> buscarPorTitulo(String titulo) {
-        return blogRepository.findByTituloContainingIgnoreCaseAndActivoTrue(titulo);
-    }
 }

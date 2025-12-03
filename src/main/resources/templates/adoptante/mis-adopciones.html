@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Adopciones - AdoptPets</title>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/adoptante/adopciones}" class="active">📋 Mis Adopciones</a></li>
+            <li><a th:href="@{/adoptante/perfil}">👤 Mi Perfil</a></li>
+            <li><a th:href="@{/main}">🌐 Inicio</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <h1>Mis Solicitudes de Adopción</h1>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="logout-btn">Cerrar Sesión</button>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(adopciones)}" class="empty-state">
+            <div class="empty-state-icon">🐕</div>
+            <h3>Aún no tienes solicitudes de adopción</h3>
+            <p>Explora nuestras mascotas disponibles y encuentra a tu compañero perfecto</p>
+            <a th:href="@{/adoptante/mascotas}" class="btn-primary">
+                Ver Mascotas Disponibles
+            </a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(adopciones)}">
+            <div th:each="adopcion : ${adopciones}" class="adoption-card">
+                <img th:src="@{${adopcion.mascota.fotos != null && !adopcion.mascota.fotos.isEmpty() ?
+                                    adopcion.mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                     th:alt="${adopcion.mascota.nombre}">
+
+                <div class="adoption-info">
+                    <h3 th:text="${adopcion.mascota.nombre}">Luna</h3>
+                    <p><strong>Especie:</strong> <span th:text="${adopcion.mascota.especie}">Perro</span></p>
+                    <p><strong>Raza:</strong> <span th:text="${adopcion.mascota.raza}">Mestizo</span></p>
+                    <p><strong>Refugio:</strong> <span th:text="${adopcion.mascota.refugio?.nombreRefugio}">Refugio</span></p>
+                    <p><strong>Fecha de solicitud:</strong>
+                        <span th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</span>
+                    </p>
+                    <p th:if="${adopcion.fechaAprobacion != null}">
+                        <strong>Fecha de aprobación:</strong>
+                        <span th:text="${#temporals.format(adopcion.fechaAprobacion, 'dd/MM/yyyy')}">01/01/2024</span>
+                    </p>
+                </div>
+
+                <div class="adoption-actions">
+                        <span class="badge"
+                              th:classappend="${adopcion.estadoAdopcion.name() == 'PENDIENTE' ? 'badge-pending' :
+                                             adopcion.estadoAdopcion.name() == 'APROBADA' ? 'badge-approved' :
+                                             adopcion.estadoAdopcion.name() == 'COMPLETADA' ? 'badge-completed' : 'badge-rejected'}"
+                              th:text="${adopcion.estadoAdopcion}">
+                            PENDIENTE
+                        </span>
+                    <a th:href="@{/adoptante/adopciones/{id}(id=${adopcion.idAdopcion})}" class="btn-view">
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

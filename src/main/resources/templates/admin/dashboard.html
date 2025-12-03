@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/dashboardadmin.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+
+<div class="dashboard-container">
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="top-bar">
+            <h1>Dashboard Administrativo</h1>
+            <div class="user-info">
+                <span>👤 Admin</span>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Mascotas</h3>
+                <div class="number" th:text="${totalMascotas}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Disponibles</h3>
+                <div class="number" th:text="${mascotasDisponibles}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Solicitudes Pendientes</h3>
+                <div class="number" th:text="${solicitudesPendientes}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Adopciones Completadas</h3>
+                <div class="number" th:text="${adopcionesCompletadas}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Usuarios</h3>
+                <div class="number" th:text="${totalUsuarios}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Refugios</h3>
+                <div class="number" th:text="${totalRefugios}">0</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Solicitudes de Adopción Pendientes</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adoptante</th>
+                    <th>Mascota</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="adopcion : ${adopcionesPendientes}">
+                    <td th:text="${adopcion.idAdopcion}">1</td>
+                    <td th:text="${adopcion.adoptante.nombre + ' ' + adopcion.adoptante.apellido}">Usuario</td>
+                    <td th:text="${adopcion.mascota.nombre}">Mascota</td>
+                    <td th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</td>
+                    <td><span class="badge badge-pending">PENDIENTE</span></td>
+                    <td>
+                        <a th:href="@{/admin/adopciones/pendientes}" class="btn btn-primary">Ver</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(adopcionesPendientes)}">
+                    <td colspan="6" style="text-align: center; padding: 20px; color: #999;">
+                        No hay solicitudes pendientes
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Últimas Mascotas Registradas</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Especie</th>
+                    <th>Refugio</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mascota : ${ultimasMascotas}">
+                    <td th:text="${mascota.idMascota}">1</td>
+                    <td th:text="${mascota.nombre}">Luna</td>
+                    <td th:text="${mascota.especie}">Perro</td>
+                    <td th:text="${mascota.refugio?.nombreRefugio}">Refugio</td>
+                    <td><span class="badge badge-success" th:text="${mascota.estadoAdopcion}">disponible</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
+</body>
+</html>

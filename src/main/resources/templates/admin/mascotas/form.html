@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Mascota - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/formulario.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+<div class="admin-layout">
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 th:text="${mascota.idMascota != null ? 'Editar Mascota' : 'Nueva Mascota'}">Formulario Mascota</h1>
+            <a th:href="@{/admin/mascotas}" class="back-btn">← Volver</a>
+        </div>
+
+        <div class="form-container">
+            <form method="post" th:action="@{/admin/mascotas/guardar}" th:object="${mascota}">
+                <input type="hidden" th:field="*{idMascota}" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" th:field="*{nombre}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="especie">Especie *</label>
+                        <select id="especie" th:field="*{especie}" required>
+                            <option value="">Seleccionar</option>
+                            <option value="perro">Perro</option>
+                            <option value="gato">Gato</option>
+                            <option value="conejo">Conejo</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="raza">Raza</label>
+                        <input type="text" id="raza" th:field="*{raza}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edadAproximada">Edad Aproximada (años)</label>
+                        <input type="number" id="edadAproximada" th:field="*{edadAproximada}" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sexo">Sexo *</label>
+                        <select id="sexo" th:field="*{sexo}" required>
+                            <option value="">Seleccionar</option>
+                            <option value="macho">Macho</option>
+                            <option value="hembra">Hembra</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tamano">Tamaño *</label>
+                        <select id="tamano" th:field="*{tamano}" required>
+                            <option value="">Seleccionar</option>
+                            <option value="pequeño">Pequeño</option>
+                            <option value="mediano">Mediano</option>
+                            <option value="grande">Grande</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" step="0.1" id="peso" th:field="*{peso}" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input type="text" id="color" th:field="*{color}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="refugio">Refugio *</label>
+                    <select id="refugio" th:field="*{refugio.idRefugio}" required>
+                        <option value="">Seleccionar refugio</option>
+                        <option th:each="refugio : ${refugios}"
+                                th:value="${refugio.idRefugio}"
+                                th:text="${refugio.nombreRefugio}">
+                            Refugio
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" th:field="*{descripcion}"
+                              placeholder="Describe la personalidad y características de la mascota..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="estadoSalud">Estado de Salud</label>
+                    <textarea id="estadoSalud" th:field="*{estadoSalud}"
+                              placeholder="Información sobre el estado de salud actual..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Características</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vacunado" th:field="*{vacunado}">
+                            <label for="vacunado">Vacunado</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="esterilizado" th:field="*{esterilizado}">
+                            <label for="esterilizado">Esterilizado</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="microchip" th:field="*{microchip}">
+                            <label for="microchip">Microchip</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estadoAdopcion">Estado de Adopción</label>
+                        <select id="estadoAdopcion" th:field="*{estadoAdopcion}">
+                            <option value="disponible">Disponible</option>
+                            <option value="en proceso">En Proceso</option>
+                            <option value="adoptada">Adoptada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaIngreso">Fecha de Ingreso</label>
+                        <input type="date" id="fechaIngreso" th:field="*{fechaIngreso}">
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">💾 Guardar Mascota</button>
+                    <a th:href="@{/admin/mascotas}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

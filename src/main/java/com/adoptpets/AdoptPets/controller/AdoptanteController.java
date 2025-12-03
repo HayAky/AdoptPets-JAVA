@@ -1,102 +1,179 @@
 package com.adoptpets.AdoptPets.controller;
 
 import com.adoptpets.AdoptPets.model.Adopcion;
+import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.model.Usuario;
+import com.adoptpets.AdoptPets.repository.UsuarioRepository;
 import com.adoptpets.AdoptPets.service.AdopcionService;
 import com.adoptpets.AdoptPets.service.MascotaService;
-import com.adoptpets.AdoptPets.repository.UsuarioRepository;
-import com.adoptpets.AdoptPets.repository.SeguimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/adoptante")
+@PreAuthorize("hasAnyRole('ADOPTANTE', 'ADMIN')")
 public class AdoptanteController {
-
-    @Autowired
-    private AdopcionService adopcionService;
 
     @Autowired
     private MascotaService mascotaService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private AdopcionService adopcionService;
 
     @Autowired
-    private SeguimientoRepository seguimientoRepository;
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication auth) {
-        Usuario usuario = obtenerUsuarioActual(auth);
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Mis adopciones
-        var misAdopciones = adopcionService.listarPorUsuario(usuario);
+        List<Adopcion> misAdopciones = adopcionService.listarPorUsuario(usuario);
+
+        Long solicitudesPendientes = misAdopciones.stream()
+                .filter(a -> a.getEstadoAdopcion().name().equals("PENDIENTE"))
+                .count();
+
+        Long solicitudesAprobadas = misAdopciones.stream()
+                .filter(a -> a.getEstadoAdopcion().name().equals("APROBADA"))
+                .count();
+
+        Long adopcionesCompletadas = misAdopciones.stream()
+                .filter(a -> a.getEstadoAdopcion().name().equals("COMPLETADA"))
+                .count();
+
+        model.addAttribute("usuario", usuario);
         model.addAttribute("misAdopciones", misAdopciones);
-
-        // Seguimientos
-        var seguimientos = seguimientoRepository.findByAdoptanteOrderByFechaSeguimientoDesc(usuario);
-        model.addAttribute("seguimientos", seguimientos);
-
-        // Estadísticas personales
-        model.addAttribute("totalSolicitudes", misAdopciones.size());
-        model.addAttribute("solicitudesPendientes",
-                misAdopciones.stream().filter(a -> a.getEstadoAdopcion().name().equals("PENDIENTE")).count());
+        model.addAttribute("solicitudesPendientes", solicitudesPendientes);
+        model.addAttribute("solicitudesAprobadas", solicitudesAprobadas);
+        model.addAttribute("adopcionesCompletadas", adopcionesCompletadas);
 
         return "adoptante/dashboard";
     }
 
-    @GetMapping("/mascotas-disponibles")
-    public String mascotasDisponibles(Model model) {
-        model.addAttribute("mascotas", mascotaService.listarDisponibles());
-        return "adoptante/mascotas-disponibles";
+    @GetMapping("/mascotas")
+    public String verMascotasDisponibles(Model model,
+                                         @RequestParam(required = false) String especie,
+                                         @RequestParam(required = false) String sexo,
+                                         @RequestParam(required = false) String busqueda) {
+        List<Mascota> mascotas;
+
+        if (busqueda != null && !busqueda.isEmpty()) {
+            mascotas = mascotaService.buscar(busqueda);
+        } else if (especie != null && !especie.isEmpty()) {
+            mascotas = mascotaService.buscarPorEspecie(especie);
+        } else {
+            mascotas = mascotaService.listarDisponibles();
+        }
+
+        // Filtro adicional por sexo si se especifica
+        if (sexo != null && !sexo.isEmpty()) {
+            String sexoLower = sexo.toLowerCase();
+            mascotas = mascotas.stream()
+                    .filter(m -> m.getSexo().toLowerCase().equals(sexoLower))
+                    .toList();
+        }
+
+        model.addAttribute("mascotas", mascotas);
+        model.addAttribute("busqueda", busqueda);
+        model.addAttribute("especie", especie);
+        model.addAttribute("sexo", sexo);
+
+        return "adoptante/mascotas";
     }
 
-    @GetMapping("/mascota/{id}")
-    public String verMascota(@PathVariable Long id, Model model) {
-        model.addAttribute("mascota", mascotaService.buscarPorId(id).orElseThrow());
+    @GetMapping("/mascotas/{id}")
+    public String verDetalleMascota(@PathVariable Long id, Model model) {
+        Mascota mascota = mascotaService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+
+        model.addAttribute("mascota", mascota);
         return "adoptante/mascota-detalle";
     }
 
-    @PostMapping("/solicitar-adopcion/{mascotaId}")
-    public String solicitarAdopcion(
-            @PathVariable Long mascotaId,
-            @RequestParam String observaciones,
-            Authentication auth) {
-
-        Usuario usuario = obtenerUsuarioActual(auth);
-        var mascota = mascotaService.buscarPorId(mascotaId).orElseThrow();
-
-        Adopcion adopcion = Adopcion.builder()
-                .adoptante(usuario)
-                .mascota(mascota)
-                .observaciones(observaciones)
-                .build();
-
-        adopcionService.crearSolicitud(adopcion);
-        return "redirect:/adoptante/mis-solicitudes";
-    }
-
-    @GetMapping("/mis-solicitudes")
-    public String misSolicitudes(Model model, Authentication auth) {
-        Usuario usuario = obtenerUsuarioActual(auth);
-        model.addAttribute("solicitudes", adopcionService.listarPorUsuario(usuario));
-        return "adoptante/mis-solicitudes";
-    }
-
-    @GetMapping("/mis-seguimientos")
-    public String misSeguimientos(Model model, Authentication auth) {
-        Usuario usuario = obtenerUsuarioActual(auth);
-        model.addAttribute("seguimientos",
-                seguimientoRepository.findByAdoptanteOrderByFechaSeguimientoDesc(usuario));
-        return "adoptante/mis-seguimientos";
-    }
-
-    private Usuario obtenerUsuarioActual(Authentication auth) {
-        String email = auth.getName();
-        return usuarioRepository.findByEmail(email)
+    @GetMapping("/adopciones")
+    public String misAdopciones(Model model, Authentication auth) {
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Adopcion> adopciones = adopcionService.listarPorUsuario(usuario);
+        model.addAttribute("adopciones", adopciones);
+
+        return "adoptante/mis-adopciones";
+    }
+
+    @GetMapping("/adopciones/{id}")
+    public String verDetalleAdopcion(@PathVariable Long id, Model model, Authentication auth) {
+        Adopcion adopcion = adopcionService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Adopción no encontrada"));
+
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar que la adopción pertenece al usuario
+        if (!adopcion.getAdoptante().getIdUsuario().equals(usuario.getIdUsuario())) {
+            throw new RuntimeException("No autorizado");
+        }
+
+        model.addAttribute("adopcion", adopcion);
+        return "adoptante/adopcion-detalle";
+    }
+
+    @PostMapping("/solicitar-adopcion/{mascotaId}")
+    public String solicitarAdopcion(@PathVariable Long mascotaId,
+                                    @RequestParam String observaciones,
+                                    Authentication auth,
+                                    RedirectAttributes flash) {
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Mascota mascota = mascotaService.buscarPorId(mascotaId)
+                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+
+        if (!"disponible".equals(mascota.getEstadoAdopcion())) {
+            flash.addFlashAttribute("error", "La mascota ya no está disponible");
+            return "redirect:/adoptante/mascotas";
+        }
+
+        adopcionService.crearSolicitud(usuario, mascota, observaciones);
+        flash.addFlashAttribute("success", "Solicitud de adopción enviada exitosamente");
+
+        return "redirect:/adoptante/adopciones";
+    }
+
+    @GetMapping("/perfil")
+    public String verPerfil(Model model, Authentication auth) {
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        model.addAttribute("usuario", usuario);
+        return "adoptante/perfil";
+    }
+
+    @PostMapping("/perfil/actualizar")
+    public String actualizarPerfil(@ModelAttribute Usuario usuarioActualizado,
+                                   Authentication auth,
+                                   RedirectAttributes flash) {
+        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Actualizar solo campos permitidos
+        usuario.setNombre(usuarioActualizado.getNombre());
+        usuario.setApellido(usuarioActualizado.getApellido());
+        usuario.setTelefono(usuarioActualizado.getTelefono());
+        usuario.setDireccion(usuarioActualizado.getDireccion());
+        usuario.setCiudad(usuarioActualizado.getCiudad());
+
+        usuarioRepository.save(usuario);
+        flash.addFlashAttribute("success", "Perfil actualizado exitosamente");
+
+        return "redirect:/adoptante/perfil";
     }
 }

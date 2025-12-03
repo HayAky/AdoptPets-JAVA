@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adopciones Pendientes - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/pendiente.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+<div class="admin-layout">
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Solicitudes de Adopción Pendientes</h1>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}">
+            Operación exitosa
+        </div>
+
+        <div th:if="${#lists.isEmpty(adopciones)}" class="empty-state">
+            <div class="empty-state-icon">✅</div>
+            <h3>No hay solicitudes pendientes</h3>
+            <p>Todas las solicitudes han sido procesadas</p>
+        </div>
+
+        <div th:each="adopcion : ${adopciones}" class="adoption-card">
+            <div class="card-header">
+                <img th:src="@{${adopcion.mascota.fotos != null && !adopcion.mascota.fotos.isEmpty() ?
+                                    adopcion.mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                     th:alt="${adopcion.mascota.nombre}">
+
+                <div class="pet-info">
+                    <h3 th:text="${adopcion.mascota.nombre}">Luna</h3>
+                    <p><strong>ID Solicitud:</strong> #<span th:text="${adopcion.idAdopcion}">1</span></p>
+                    <p><strong>Especie:</strong> <span th:text="${adopcion.mascota.especie}">Perro</span></p>
+                    <p><strong>Raza:</strong> <span th:text="${adopcion.mascota.raza}">Mestizo</span></p>
+                    <p><strong>Refugio:</strong> <span th:text="${adopcion.mascota.refugio?.nombreRefugio}">Refugio</span></p>
+                </div>
+
+                <div>
+                    <span class="badge">PENDIENTE</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="info-section">
+                    <h4>👤 Información del Solicitante</h4>
+                    <p><strong>Nombre:</strong>
+                        <span th:text="${adopcion.adoptante.nombre + ' ' + adopcion.adoptante.apellido}">Usuario</span>
+                    </p>
+                    <p><strong>Email:</strong> <span th:text="${adopcion.adoptante.email}">email@example.com</span></p>
+                    <p><strong>Teléfono:</strong> <span th:text="${adopcion.adoptante.telefono}">300-000-0000</span></p>
+                    <p><strong>Ciudad:</strong> <span th:text="${adopcion.adoptante.ciudad}">Bogotá</span></p>
+                    <p><strong>Dirección:</strong> <span th:text="${adopcion.adoptante.direccion}">Dirección</span></p>
+                </div>
+
+                <div class="info-section">
+                    <h4>📅 Información de la Solicitud</h4>
+                    <p><strong>Fecha:</strong>
+                        <span th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</span>
+                    </p>
+                    <p><strong>Formulario enviado:</strong>
+                        <span th:text="${adopcion.formularioEnviado ? 'Sí' : 'No'}">No</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="observations" th:if="${adopcion.observaciones != null}">
+                <strong>📝 Observaciones del Solicitante:</strong>
+                <p th:text="${adopcion.observaciones}">Observaciones...</p>
+            </div>
+
+            <div class="card-actions">
+                <form method="post" th:action="@{/admin/adopciones/aprobar/{id}(id=${adopcion.idAdopcion})}"
+                      style="display: inline;">
+                    <button type="submit" class="btn btn-approve"
+                            onclick="return confirm('¿Está seguro de aprobar esta adopción?')">
+                        ✅ Aprobar
+                    </button>
+                </form>
+                <button class="btn btn-reject"
+                        th:onclick="'openRejectModal(' + ${adopcion.idAdopcion} + ')'">
+                    ❌ Rechazar
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal para rechazar -->
+<div id="rejectModal" class="modal">
+    <div class="modal-content">
+        <h3>Rechazar Solicitud</h3>
+        <form id="rejectForm" method="post">
+            <textarea name="motivo" placeholder="Ingrese el motivo del rechazo..." required></textarea>
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-reject">Confirmar Rechazo</button>
+                <button type="button" class="btn" style="background: #6b7280; color: white;"
+                        onclick="closeRejectModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openRejectModal(adopcionId) {
+        const modal = document.getElementById('rejectModal');
+        const form = document.getElementById('rejectForm');
+        form.action = '/admin/adopciones/rechazar/' + adopcionId;
+        modal.style.display = 'block';
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('rejectModal');
+        if (event.target == modal) {
+            closeRejectModal();
+        }
+    }
+</script>
+</body>
+</html>

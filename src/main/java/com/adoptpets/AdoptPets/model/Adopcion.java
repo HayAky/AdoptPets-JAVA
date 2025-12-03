@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "adopciones")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,7 +38,7 @@ public class Adopcion {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_adopcion")
     @Builder.Default
-    private EstadoAdopcion estadoAdopcion = EstadoAdopcion.PENDIENTE;
+    private EstadoAdopcion estadoAdopcion = EstadoAdopcion.pendiente;
 
     @Column(name = "url_formulario_descarga")
     private String urlFormularioDescarga;

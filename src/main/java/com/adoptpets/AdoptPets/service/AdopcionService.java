@@ -1,6 +1,7 @@
 package com.adoptpets.AdoptPets.service;
 
 import com.adoptpets.AdoptPets.model.Adopcion;
+import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.model.Usuario;
 import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import com.adoptpets.AdoptPets.repository.AdopcionRepository;
@@ -27,74 +28,83 @@ public class AdopcionService {
         return adopcionRepository.findAll();
     }
 
+    public List<Adopcion> listarPendientes() {
+        return adopcionRepository.findAdopcionesPendientes();
+    }
+
     public List<Adopcion> listarPorUsuario(Usuario usuario) {
         return adopcionRepository.findByAdoptante(usuario);
     }
 
-    public List<Adopcion> listarPorEstado(EstadoAdopcion estado) {
-        return adopcionRepository.findByEstadoAdopcion(estado);
-    }
-
-    public List<Adopcion> listarPendientes() {
-        return adopcionRepository.findByEstadoAdopcion(EstadoAdopcion.PENDIENTE);
+    public List<Adopcion> listarPorUsuarioId(Long usuarioId) {
+        return adopcionRepository.findByAdoptanteId(usuarioId);
     }
 
     public Optional<Adopcion> buscarPorId(Long id) {
         return adopcionRepository.findById(id);
     }
 
-    public Adopcion crearSolicitud(Adopcion adopcion) {
-        adopcion.setFechaSolicitud(LocalDate.now());
-        adopcion.setEstadoAdopcion(EstadoAdopcion.PENDIENTE);
+    public Adopcion crearSolicitud(Usuario adoptante, Mascota mascota, String observaciones) {
+        Adopcion adopcion = Adopcion.builder()
+                .adoptante(adoptante)
+                .mascota(mascota)
+                .fechaSolicitud(LocalDate.now())
+                .estadoAdopcion(EstadoAdopcion.pendiente)
+                .observaciones(observaciones)
+                .formularioEnviado(false)
+                .build();
 
-        // Cambiar estado de la mascota
-        var mascota = adopcion.getMascota();
-        mascota.setEstadoAdopcion("en proceso");
+        // Actualizar estado de la mascota
+        mascota.setEstadoAdopcion(EstadoAdopcion.valueOf("en proceso"));
         mascotaRepository.save(mascota);
 
         return adopcionRepository.save(adopcion);
     }
 
-    public Adopcion aprobar(Long id) {
-        Adopcion adopcion = adopcionRepository.findById(id)
+    public Adopcion aprobarAdopcion(Long adopcionId) {
+        Adopcion adopcion = adopcionRepository.findById(adopcionId)
                 .orElseThrow(() -> new RuntimeException("Adopción no encontrada"));
-        adopcion.setEstadoAdopcion(EstadoAdopcion.APROBADA);
+
+        adopcion.setEstadoAdopcion(EstadoAdopcion.aprovada);
         adopcion.setFechaAprobacion(LocalDate.now());
+
         return adopcionRepository.save(adopcion);
     }
 
-    public Adopcion rechazar(Long id, String motivo) {
-        Adopcion adopcion = adopcionRepository.findById(id)
+    public Adopcion rechazarAdopcion(Long adopcionId, String motivo) {
+        Adopcion adopcion = adopcionRepository.findById(adopcionId)
                 .orElseThrow(() -> new RuntimeException("Adopción no encontrada"));
-        adopcion.setEstadoAdopcion(EstadoAdopcion.RECHAZADA);
-        adopcion.setObservaciones(motivo);
+
+        adopcion.setEstadoAdopcion(EstadoAdopcion.rechazada);
+        adopcion.setObservaciones(adopcion.getObservaciones() + "\nMotivo rechazo: " + motivo);
 
         // Devolver mascota a disponible
-        var mascota = adopcion.getMascota();
-        mascota.setEstadoAdopcion("disponible");
+        Mascota mascota = adopcion.getMascota();
+        mascota.setEstadoAdopcion(EstadoAdopcion.valueOf("disponible"));
         mascotaRepository.save(mascota);
 
         return adopcionRepository.save(adopcion);
     }
 
-    public Adopcion completar(Long id) {
-        Adopcion adopcion = adopcionRepository.findById(id)
+    public Adopcion completarAdopcion(Long adopcionId) {
+        Adopcion adopcion = adopcionRepository.findById(adopcionId)
                 .orElseThrow(() -> new RuntimeException("Adopción no encontrada"));
-        adopcion.setEstadoAdopcion(EstadoAdopcion.COMPLETADA);
 
-        // Marcar mascota como adoptada
-        var mascota = adopcion.getMascota();
-        mascota.setEstadoAdopcion("adoptado");
+        adopcion.setEstadoAdopcion(EstadoAdopcion.completada);
+
+        // Actualizar estado de la mascota
+        Mascota mascota = adopcion.getMascota();
+        mascota.setEstadoAdopcion(EstadoAdopcion.valueOf("adoptada"));
         mascotaRepository.save(mascota);
 
         return adopcionRepository.save(adopcion);
     }
 
     public Long contarPorEstado(EstadoAdopcion estado) {
-        return adopcionRepository.countByEstadoAdopcion(estado);
+        return adopcionRepository.countByEstado(estado);
     }
 
-    public List<Object[]> estadisticasMensuales(int year) {
-        return adopcionRepository.countAdopcionesPorMes(year);
+    public List<Adopcion> listarPorRefugio(Long refugioId) {
+        return adopcionRepository.findByRefugioId(refugioId);
     }
 }

@@ -7,32 +7,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface RefugioRepository extends JpaRepository<Refugio, Long> {
 
-    // Buscar refugios activos
     List<Refugio> findByActivoTrue();
 
-    // Buscar por localidad
     List<Refugio> findByLocalidad(String localidad);
 
-    // Buscar por nombre (búsqueda parcial)
-    List<Refugio> findByNombreRefugioContainingIgnoreCase(String nombre);
+    List<Refugio> findByLocalidadAndActivoTrue(String localidad);
 
-    // Buscar por email
-    Optional<Refugio> findByEmail(String email);
+    @Query("SELECT r FROM Refugio r WHERE r.activo = true ORDER BY r.nombreRefugio")
+    List<Refugio> findAllActivos();
 
-    // Refugios con capacidad disponible
-    @Query("SELECT r FROM Refugio r WHERE r.activo = true AND " +
-            "(SELECT COUNT(m) FROM Mascota m WHERE m.refugio = r AND m.estadoAdopcion = 'disponible') < r.capacidadMaxima")
-    List<Refugio> findRefugiosConCapacidad();
-
-    // Contar mascotas por refugio
     @Query("SELECT COUNT(m) FROM Mascota m WHERE m.refugio.idRefugio = :refugioId")
     Long countMascotasByRefugio(@Param("refugioId") Long refugioId);
 
-    // Refugios por localidad activos
-    List<Refugio> findByLocalidadAndActivoTrue(String localidad);
+    @Query("SELECT COUNT(m) FROM Mascota m WHERE m.refugio.idRefugio = :refugioId AND m.estadoAdopcion = 'disponible'")
+    Long countMascotasDisponiblesByRefugio(@Param("refugioId") Long refugioId);
 }

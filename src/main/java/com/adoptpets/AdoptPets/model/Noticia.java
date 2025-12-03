@@ -34,7 +34,7 @@ public class Noticia {
     private LocalDate fechaPublicacion;
 
     @Builder.Default
-    private Boolean activa = true;
+    private boolean activa = true;
 
     @Enumerated(EnumType.STRING)
     private CategoriaNoticia categoria;

@@ -14,31 +14,24 @@ import java.util.List;
 @Repository
 public interface AdopcionRepository extends JpaRepository<Adopcion, Long> {
 
-    // Buscar adopciones por adoptante
     List<Adopcion> findByAdoptante(Usuario adoptante);
 
-    // Buscar por estado
     List<Adopcion> findByEstadoAdopcion(EstadoAdopcion estado);
 
-    // Buscar adopciones pendientes de un usuario
     List<Adopcion> findByAdoptanteAndEstadoAdopcion(Usuario adoptante, EstadoAdopcion estado);
 
-    // Contar adopciones por estado
-    Long countByEstadoAdopcion(EstadoAdopcion estado);
+    @Query("SELECT a FROM Adopcion a WHERE a.estadoAdopcion = 'PENDIENTE' ORDER BY a.fechaSolicitud DESC")
+    List<Adopcion> findAdopcionesPendientes();
 
-    // Adopciones por rango de fechas
-    @Query("SELECT a FROM Adopcion a WHERE a.fechaSolicitud BETWEEN :inicio AND :fin")
-    List<Adopcion> findByFechaSolicitudBetween(@Param("inicio") LocalDate inicio, @Param("fin") LocalDate fin);
+    @Query("SELECT COUNT(a) FROM Adopcion a WHERE a.estadoAdopcion = :estado")
+    Long countByEstado(@Param("estado") EstadoAdopcion estado);
 
-    // Estadísticas mensuales
-    @Query("SELECT MONTH(a.fechaSolicitud), COUNT(a) FROM Adopcion a WHERE YEAR(a.fechaSolicitud) = :year GROUP BY MONTH(a.fechaSolicitud)")
-    List<Object[]> countAdopcionesPorMes(@Param("year") int year);
+    @Query("SELECT a FROM Adopcion a WHERE a.mascota.refugio.idRefugio = :refugioId")
+    List<Adopcion> findByRefugioId(@Param("refugioId") Long refugioId);
 
-    // Adopciones recientes
-    @Query("SELECT a FROM Adopcion a ORDER BY a.fechaSolicitud DESC")
-    List<Adopcion> findRecientes();
+    @Query("SELECT COUNT(a) FROM Adopcion a WHERE a.fechaSolicitud BETWEEN :inicio AND :fin")
+    Long countAdopcionesPorFecha(@Param("inicio") LocalDate inicio, @Param("fin") LocalDate fin);
 
-    // Verificar si una mascota tiene adopciones pendientes
-    @Query("SELECT COUNT(a) > 0 FROM Adopcion a WHERE a.mascota.idMascota = :mascotaId AND a.estadoAdopcion = 'PENDIENTE'")
-    boolean existeAdopcionPendientePorMascota(@Param("mascotaId") Long mascotaId);
+    @Query("SELECT a FROM Adopcion a WHERE a.adoptante.idUsuario = :usuarioId ORDER BY a.fechaSolicitud DESC")
+    List<Adopcion> findByAdoptanteId(@Param("usuarioId") Long usuarioId);
 }

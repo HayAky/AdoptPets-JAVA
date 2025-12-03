@@ -1,5 +1,6 @@
 package com.adoptpets.AdoptPets.model;
 
+import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "mascotas")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -56,8 +58,10 @@ public class Mascota {
     @Builder.Default
     private Boolean microchip = false;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado_adopcion")
-    private String estadoAdopcion; // Se puede mapear como Enum si se prefiere strictness
+    @Builder.Default
+    private EstadoAdopcion estadoAdopcion = EstadoAdopcion.disponible;
 
     @Column(name = "fecha_ingreso")
     private LocalDate fechaIngreso;

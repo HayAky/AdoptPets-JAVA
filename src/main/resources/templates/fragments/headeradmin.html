@@ -1,17 +1,17 @@
-<header id="header">
+<header th:fragment="~{headeradmin}">
     <div class="contenedor">
         <a th:href="@{/main}" class="logo">
             <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
         </a>
         <nav>
-            <a href="#" class="active">📊 Dashboard</a>
-            <a th:href="@{/admin/mascotas}">🐾 Mascotas</a>
-            <a th:href="@{/admin/adopciones}">📝 Adopciones</a>
-            <a th:href="@{/admin/refugios}">🏠 Refugios</a>
-            <a th:href="@{/admin/usuarios}">👥 Usuarios</a>
-            <a th:href="@{/admin/reportes}">📈 Reportes</a>
-            <a th:href="@{/main}">🏡 Ir al sitio</a>
-            <a th:href="@{/logout}">🚪 Cerrar sesión</a>
+            <a href="#" class="active">Dashboard</a>
+            <a th:href="@{/admin/mascotas}">Mascotas</a>
+            <a th:href="@{/admin/adopciones}">Adopciones</a>
+            <a th:href="@{/admin/refugios}">Refugios</a>
+            <a th:href="@{/admin/usuarios}">Usuarios</a>
+            <a th:href="@{/admin/reportes}">Reportes</a>
+            <a th:href="@{/main}">Ir al sitio</a>
+            <a th:href="@{/logout}">Cerrar sesión</a>
         </nav>
     </div>
 </header>

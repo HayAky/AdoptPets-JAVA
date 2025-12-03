@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Mascotas - AdoptPets</title>
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            color: #22C55E;
+            font-size: 28px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #22C55E;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1B9E4B;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .content-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .table tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-process {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-adopted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+<div class="admin-layout">
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Gestión de Mascotas</h1>
+            <a th:href="@{/admin/mascotas/nueva}" class="btn btn-primary">
+                ➕ Nueva Mascota
+            </a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}">
+            Operación exitosa
+        </div>
+
+        <div class="content-card">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Especie</th>
+                    <th>Raza</th>
+                    <th>Edad</th>
+                    <th>Sexo</th>
+                    <th>Refugio</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mascota : ${mascotas}">
+                    <td th:text="${mascota.idMascota}">1</td>
+                    <td>
+                        <strong th:text="${mascota.nombre}">Luna</strong>
+                    </td>
+                    <td th:text="${mascota.especie}">Perro</td>
+                    <td th:text="${mascota.raza}">Mestizo</td>
+                    <td th:text="${mascota.edadAproximada + ' años'}">2 años</td>
+                    <td th:text="${mascota.sexo}">Hembra</td>
+                    <td th:text="${mascota.refugio?.nombreRefugio}">Refugio</td>
+                    <td>
+                                <span class="badge"
+                                      th:classappend="${mascota.estadoAdopcion == 'disponible' ? 'badge-available' : 
+                                                      mascota.estadoAdopcion == 'en proceso' ? 'badge-process' : 'badge-adopted'}"
+                                      th:text="${mascota.estadoAdopcion}">
+                                    disponible
+                                </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/admin/mascotas/editar/{id}(id=${mascota.idMascota})}"
+                               class="btn btn-secondary btn-sm">
+                                ✏️ Editar
+                            </a>
+                            <a th:href="@{/admin/mascotas/eliminar/{id}(id=${mascota.idMascota})}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Está seguro de eliminar esta mascota?')">
+                                🗑️ Eliminar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(mascotas)}">
+                    <td colspan="9" style="text-align: center; padding: 40px; color: #999;">
+                        No hay mascotas registradas
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>
