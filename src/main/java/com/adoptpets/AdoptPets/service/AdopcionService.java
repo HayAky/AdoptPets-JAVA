@@ -65,7 +65,7 @@ public class AdopcionService {
         Adopcion adopcion = adopcionRepository.findById(adopcionId)
                 .orElseThrow(() -> new RuntimeException("Adopción no encontrada"));
 
-        adopcion.setEstadoAdopcion(EstadoAdopcion.aprovada);
+        adopcion.setEstadoAdopcion(EstadoAdopcion.aprobada);
         adopcion.setFechaAprobacion(LocalDate.now());
 
         return adopcionRepository.save(adopcion);

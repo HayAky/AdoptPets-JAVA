@@ -15,6 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
@@ -35,7 +40,6 @@ public class SecurityConfig {
 
                         // Rutas de administrador
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
 
                         // Rutas de adoptante (incluye admin)
                         .requestMatchers("/adoptante/**").hasAnyRole("ADOPTANTE", "ADMIN")
@@ -83,8 +87,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

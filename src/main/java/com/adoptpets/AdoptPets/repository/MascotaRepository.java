@@ -17,7 +17,7 @@ public interface MascotaRepository extends JpaRepository<Mascota, Long> {
 
     List<Mascota> findByEspecieAndEstadoAdopcion(String especie, String estado);
 
-    @Query("SELECT m FROM Mascota m LEFT JOIN FETCH m.fotos WHERE m.estadoAdopcion = 'disponible' ORDER BY m.fechaIngreso DESC")
+    @Query("SELECT m FROM Mascota m WHERE m.estadoAdopcion = 'disponible' ORDER BY m.fechaIngreso DESC")
     List<Mascota> findMascotasDisponibles();
 
     @Query("SELECT COUNT(m) FROM Mascota m WHERE m.refugio.idRefugio = :refugioId AND m.estadoAdopcion = :estado")

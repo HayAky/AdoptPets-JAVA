@@ -2,7 +2,6 @@ package com.adoptpets.AdoptPets.service;
 
 import com.adoptpets.AdoptPets.model.Seguimiento;
 import com.adoptpets.AdoptPets.model.Usuario;
-import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.repository.SeguimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,20 +18,20 @@ public class SeguimientoService {
     @Autowired
     private SeguimientoRepository seguimientoRepository;
 
+    public List<Seguimiento> listarTodos() {
+        return seguimientoRepository.findAll();
+    }
+
     public List<Seguimiento> listarPorAdoptante(Usuario adoptante) {
-        return seguimientoRepository.findByAdoptanteOrderByFechaSeguimientoDesc(adoptante);
+        return seguimientoRepository.findByAdoptante(adoptante);
     }
 
-    public List<Seguimiento> listarPorMascota(Mascota mascota) {
-        return seguimientoRepository.findByMascotaOrderByFechaSeguimientoDesc(mascota);
+    public List<Seguimiento> listarPorAdoptanteId(Long usuarioId) {
+        return seguimientoRepository.findByAdoptanteId(usuarioId);
     }
 
-    public List<Seguimiento> proximosSeguimientos(LocalDate fecha) {
-        return seguimientoRepository.findProximosSeguimientos(fecha);
-    }
-
-    public List<Seguimiento> seguimientosPendientes() {
-        return seguimientoRepository.findSeguimientosPendientes();
+    public List<Seguimiento> listarPendientes() {
+        return seguimientoRepository.findSeguimientosPendientes(LocalDate.now());
     }
 
     public Optional<Seguimiento> buscarPorId(Long id) {

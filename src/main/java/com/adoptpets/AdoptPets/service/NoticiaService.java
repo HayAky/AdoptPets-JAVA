@@ -17,12 +17,20 @@ public class NoticiaService {
     @Autowired
     private NoticiaRepository noticiaRepository;
 
+    public List<Noticia> listarTodas() {
+        return noticiaRepository.findAll();
+    }
+
     public List<Noticia> listarActivas() {
+        return noticiaRepository.findByActivaTrue();
+    }
+
+    public List<Noticia> listarActivasOrdenadas() {
         return noticiaRepository.findByActivaTrueOrderByFechaPublicacionDesc();
     }
 
     public List<Noticia> listarPorCategoria(CategoriaNoticia categoria) {
-        return noticiaRepository.findByCategoriaAndActivaTrue(categoria);
+        return noticiaRepository.findByCategoria(categoria);
     }
 
     public Optional<Noticia> buscarPorId(Long id) {
@@ -35,9 +43,5 @@ public class NoticiaService {
 
     public void eliminar(Long id) {
         noticiaRepository.deleteById(id);
-    }
-
-    public List<Noticia> buscarPorTitulo(String titulo) {
-        return noticiaRepository.findByTituloContainingIgnoreCaseAndActivaTrue(titulo);
     }
 }

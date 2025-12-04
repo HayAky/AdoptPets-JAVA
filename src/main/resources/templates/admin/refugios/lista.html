@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Refugios - AdoptPets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #22C55E 0%, #1B9E4B 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            color: #22C55E;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #22C55E;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1B9E4B;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .refugios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .refugio-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .refugio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .refugio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .refugio-header h3 {
+            color: #22C55E;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .refugio-info {
+            margin: 15px 0;
+        }
+
+        .refugio-info p {
+            margin: 8px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .refugio-info p strong {
+            color: #333;
+        }
+
+        .refugio-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #22C55E;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .refugio-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🐾 AdoptPets</h2>
+            <p style="opacity: 0.8; font-size: 14px;">Panel Admin</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/admin/dashboard}">📊 Dashboard</a></li>
+            <li><a th:href="@{/admin/mascotas}">🐶 Mascotas</a></li>
+            <li><a th:href="@{/admin/adopciones}">📋 Adopciones</a></li>
+            <li><a th:href="@{/admin/usuarios}">👥 Usuarios</a></li>
+            <li><a th:href="@{/admin/refugios}" class="active">🏠 Refugios</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Gestión de Refugios</h1>
+            <a th:href="@{/admin/refugios/nuevo}" class="btn btn-primary">
+                ➕ Nuevo Refugio
+            </a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}">
+            Operación exitosa
+        </div>
+
+        <div class="refugios-grid">
+            <div th:each="refugio : ${refugios}" class="refugio-card">
+                <div class="refugio-header">
+                    <div>
+                        <h3 th:text="${refugio.nombreRefugio}">Refugio</h3>
+                        <p style="color: #666; font-size: 14px;">
+                            📍 <span th:text="${refugio.localidad}">Localidad</span>
+                        </p>
+                    </div>
+                    <span class="badge"
+                          th:classappend="${refugio.activo ? 'badge-active' : 'badge-inactive'}"
+                          th:text="${refugio.activo ? 'Activo' : 'Inactivo'}">
+                            Activo
+                        </span>
+                </div>
+
+                <div class="refugio-info">
+                    <p><strong>📧 Email:</strong> <span th:text="${refugio.email}">email@refugio.com</span></p>
+                    <p><strong>📞 Teléfono:</strong> <span th:text="${refugio.telefono}">300-000-0000</span></p>
+                    <p><strong>👤 Responsable:</strong> <span th:text="${refugio.responsable}">Nombre</span></p>
+                    <p><strong>📍 Dirección:</strong> <span th:text="${refugio.direccion}">Dirección</span></p>
+                    <p th:if="${refugio.capacidadMaxima != null}">
+                        <strong>🏠 Capacidad:</strong>
+                        <span th:text="${refugio.capacidadMaxima + ' mascotas'}">50 mascotas</span>
+                    </p>
+                </div>
+
+                <div class="refugio-stats">
+                    <div class="stat-item">
+                        <div class="number">0</div>
+                        <div class="label">Mascotas Totales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">0</div>
+                        <div class="label">Disponibles</div>
+                    </div>
+                </div>
+
+                <p th:if="${refugio.descripcion != null}"
+                   th:text="${refugio.descripcion}"
+                   style="color: #666; font-size: 14px; line-height: 1.6;">
+                    Descripción del refugio...
+                </p>
+
+                <div class="refugio-actions">
+                    <a th:href="@{/admin/refugios/editar/{id}(id=${refugio.idRefugio})}"
+                       class="btn btn-primary" style="flex: 1;">
+                        ✏️ Editar
+                    </a>
+                    <a th:href="@{/admin/mascotas?refugio={id}(id=${refugio.idRefugio})}"
+                       class="btn btn-secondary" style="flex: 1;">
+                        🐶 Ver Mascotas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

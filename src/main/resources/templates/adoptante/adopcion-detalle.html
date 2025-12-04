@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Adopción - AdoptPets</title>
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/adoptdetalle.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/header :: ~{header}}"></div>
+
+<div class="layout">
+    <main class="main-content">
+        <div class="top-bar">
+            <h1>Detalle de Solicitud</h1>
+            <a th:href="@{/adoptante/adopciones}" class="back-btn">← Volver</a>
+        </div>
+
+        <div class="detail-container">
+            <div class="status-banner"
+                 th:classappend="${adopcion.estadoAdopcion.name() == 'PENDIENTE' ? 'status-pending' :
+                                    adopcion.estadoAdopcion.name() == 'APROBADA' ? 'status-approved' :
+                                    adopcion.estadoAdopcion.name() == 'COMPLETADA' ? 'status-completed' : 'status-rejected'}">
+                    <span th:if="${adopcion.estadoAdopcion.name() == 'PENDIENTE'}">
+                        ⏳ Tu solicitud está en revisión
+                    </span>
+                <span th:if="${adopcion.estadoAdopcion.name() == 'APROBADA'}">
+                        ✅ ¡Felicidades! Tu solicitud ha sido aprobada
+                    </span>
+                <span th:if="${adopcion.estadoAdopcion.name() == 'COMPLETADA'}">
+                        🎉 ¡Adopción completada exitosamente!
+                    </span>
+                <span th:if="${adopcion.estadoAdopcion.name() == 'RECHAZADA'}">
+                        ❌ Lo sentimos, tu solicitud no fue aprobada
+                    </span>
+            </div>
+
+            <div class="detail-content">
+                <div class="pet-section">
+                    <img th:src="@{${adopcion.mascota.fotos != null && !adopcion.mascota.fotos.isEmpty() ?
+                                        adopcion.mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                         th:alt="${adopcion.mascota.nombre}">
+
+                    <div>
+                        <h2 th:text="${adopcion.mascota.nombre}">Luna</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>Especie</strong>
+                                <span th:text="${adopcion.mascota.especie}">Perro</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Raza</strong>
+                                <span th:text="${adopcion.mascota.raza}">Mestizo</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Edad</strong>
+                                <span th:text="${adopcion.mascota.edadAproximada + ' años'}">2 años</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Sexo</strong>
+                                <span th:text="${adopcion.mascota.sexo}">Hembra</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>📍 Refugio</h3>
+                    <p><strong th:text="${adopcion.mascota.refugio?.nombreRefugio}">Refugio</strong></p>
+                    <p th:text="${adopcion.mascota.refugio?.direccion}">Dirección</p>
+                    <p th:if="${adopcion.mascota.refugio?.telefono != null}">
+                        📞 <span th:text="${adopcion.mascota.refugio.telefono}">Teléfono</span>
+                    </p>
+                </div>
+
+                <div class="section" th:if="${adopcion.observaciones != null}">
+                    <h3>📝 Tus Observaciones</h3>
+                    <p th:text="${adopcion.observaciones}">Observaciones del adoptante...</p>
+                </div>
+
+                <div class="section">
+                    <h3>📅 Historial de la Solicitud</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <strong>Solicitud enviada</strong>
+                            <span th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024 10:00
+                                </span>
+                        </div>
+                        <div class="timeline-item" th:if="${adopcion.fechaAprobacion != null}">
+                            <strong>Solicitud aprobada</strong>
+                            <span th:text="${#temporals.format(adopcion.fechaAprobacion, 'dd/MM/yyyy HH:mm')}">
+                                    05/01/2024 14:30
+                                </span>
+                        </div>
+                        <div class="timeline-item" th:if="${adopcion.formularioEnviado}">
+                            <strong>Formulario completado</strong>
+                            <span th:text="${adopcion.fechaEnvioFormulario != null ?
+                                               #temporals.format(adopcion.fechaEnvioFormulario, 'dd/MM/yyyy HH:mm') : 'Fecha no disponible'}">
+                                    10/01/2024 09:00
+                                </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" th:if="${adopcion.estadoAdopcion.name() == 'APROBADA'}">
+                    <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #1e40af;">
+                        <h3 style="color: #1e40af; margin-bottom: 10px;">🎯 Próximos Pasos</h3>
+                        <p style="color: #1e3a8a;">
+                            El refugio se pondrá en contacto contigo para coordinar la entrega de
+                            <strong th:text="${adopcion.mascota.nombre}">la mascota</strong>.
+                            Por favor, mantén tu teléfono disponible.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
+</body>
+</html>

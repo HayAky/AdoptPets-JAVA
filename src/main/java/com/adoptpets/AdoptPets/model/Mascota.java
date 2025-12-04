@@ -74,6 +74,6 @@ public class Mascota {
     @JoinColumn(name = "id_refugio")
     private Refugio refugio;
 
-    @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "mascota", cascade = CascadeType.ALL)
     private List<GaleriaFoto> fotos;
 }

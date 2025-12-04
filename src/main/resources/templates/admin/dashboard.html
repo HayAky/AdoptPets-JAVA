@@ -7,6 +7,8 @@
     <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/dashboardadmin.css}" rel="stylesheet">
+
+
 </head>
 <body>
 <div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
@@ -17,12 +19,6 @@
     <main class="main-content">
         <div class="top-bar">
             <h1>Dashboard Administrativo</h1>
-            <div class="user-info">
-                <span>👤 Admin</span>
-                <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <button type="submit" class="logout-btn">Cerrar Sesión</button>
-                </form>
-            </div>
         </div>
 
         <div class="stats-grid">
@@ -111,5 +107,6 @@
     </main>
 </div>
 <div th:replace="~{fragments/footer :: ~{footer}}"></div>
+<script th:src="@{/js/script.js}"></script>
 </body>
 </html>

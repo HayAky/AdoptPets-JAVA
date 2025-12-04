@@ -17,11 +17,21 @@ public class BlogService {
     @Autowired
     private BlogRepository blogRepository;
 
+    public List<Blog> listarTodos() {
+        return blogRepository.findAll();
+    }
+
     public List<Blog> listarActivos() {
+        return blogRepository.findByActivoTrue();
+    }
+
+    public List<Blog> listarActivosOrdenados() {
         return blogRepository.findByActivoTrueOrderByFechaPublicacionDesc();
     }
 
-
+    public List<Blog> listarPorCategoria(CategoriaBlog categoria) {
+        return blogRepository.findByCategoria(categoria);
+    }
 
     public Optional<Blog> buscarPorId(Long id) {
         return blogRepository.findById(id);
@@ -36,9 +46,9 @@ public class BlogService {
     }
 
     public void incrementarVisitas(Long id) {
-        Blog blog = blogRepository.findById(id).orElseThrow();
-        blog.setVisitas(blog.getVisitas() + 1);
-        blogRepository.save(blog);
+        blogRepository.findById(id).ifPresent(blog -> {
+            blog.setVisitas(blog.getVisitas() + 1);
+            blogRepository.save(blog);
+        });
     }
-
 }

@@ -41,11 +41,21 @@ public class MainController {
         model.addAttribute("especie", especie);
         model.addAttribute("busqueda", busqueda);
 
-        return "/adoptante/mascotas";
+        return "public/mascotas";
+    }
+
+    @GetMapping("/contacto")
+    public String contacto(){
+        return "contacto";
     }
 
     @GetMapping("/error404")
     public String error404(){
         return "error404";
+    }
+
+    @GetMapping("/error/403")
+    public String error403(){
+        return "error403";
     }
 }

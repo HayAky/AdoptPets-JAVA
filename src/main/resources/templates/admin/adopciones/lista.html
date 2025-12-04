@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todas las Adopciones - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/adoptlista.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+
+<div class="admin-layout">
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Gestión de Adopciones</h1>
+        </div>
+
+        <div class="tabs">
+            <a th:href="@{/admin/adopciones}" class="tab-link active">Todas</a>
+            <a th:href="@{/admin/adopciones/pendientes}" class="tab-link">Pendientes</a>
+        </div>
+
+        <div class="content-card">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adoptante</th>
+                    <th>Mascota</th>
+                    <th>Refugio</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="adopcion : ${adopciones}">
+                    <td th:text="${adopcion.idAdopcion}">1</td>
+                    <td>
+                        <div>
+                            <strong th:text="${adopcion.adoptante.nombre + ' ' + adopcion.adoptante.apellido}">
+                                Usuario
+                            </strong>
+                            <br>
+                            <small th:text="${adopcion.adoptante.email}" style="color: #666;">
+                                email@example.com
+                            </small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong th:text="${adopcion.mascota.nombre}">Luna</strong>
+                            <br>
+                            <small th:text="${adopcion.mascota.especie}" style="color: #666;">Perro</small>
+                        </div>
+                    </td>
+                    <td th:text="${adopcion.mascota.refugio?.nombreRefugio}">Refugio</td>
+                    <td th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</td>
+                    <td>
+                                <span class="badge"
+                                      th:classappend="${adopcion.estadoAdopcion.name() == 'PENDIENTE' ? 'badge-pending' :
+                                                     adopcion.estadoAdopcion.name() == 'APROBADA' ? 'badge-approved' :
+                                                     adopcion.estadoAdopcion.name() == 'COMPLETADA' ? 'badge-completed' : 'badge-rejected'}"
+                                      th:text="${adopcion.estadoAdopcion}">
+                                    PENDIENTE
+                                </span>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/adopciones/detalle/{id}(id=${adopcion.idAdopcion})}"
+                           class="btn btn-primary">
+                            Ver
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(adopciones)}">
+                    <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                        No hay adopciones registradas
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

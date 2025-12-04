@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdoptPets</title>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <h1 class="page-title">🐾 Encuentra tu Compañero Perfecto</h1>
+    <p class="page-subtitle">Estas adorables mascotas están esperando por un hogar lleno de amor</p>
+
+    <div class="filter-bar-container">
+        <form class="filter-bar" method="get" th:action="@{/adoptar}">
+            <select name="especie" id="especie">
+                <option value="">Todas las especies</option>
+                <option value="perro" th:selected="${especie == 'perro'}">🐶 Perro</option>
+                <option value="gato" th:selected="${especie == 'gato'}">🐱 Gato</option>
+                <option value="conejo" th:selected="${especie == 'conejo'}">🐰 Conejo</option>
+            </select>
+
+            <input type="text" name="busqueda" placeholder="🔍 Buscar por nombre..."
+                   th:value="${busqueda}">
+
+            <button type="submit" class="apply-btn">Buscar</button>
+            <a th:href="@{/adoptar}" class="clear-btn">Limpiar</a>
+        </form>
+    </div>
+
+    <div th:if="${#lists.isEmpty(mascotas)}" class="empty-state">
+        <div class="empty-state-icon">🐕</div>
+        <h3>No se encontraron mascotas</h3>
+        <p>Intenta ajustar los filtros de búsqueda</p>
+    </div>
+
+    <div class="pet-grid">
+        <div th:each="mascota : ${mascotas}" class="pet-card">
+            <img th:src="@{${mascota.fotos != null && !mascota.fotos.isEmpty() ?
+                                mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                 th:alt="${mascota.nombre}">
+
+            <div class="pet-info">
+                <h3 th:text="${mascota.nombre}">Luna</h3>
+                <p><strong>Especie:</strong> <span th:text="${mascota.especie}">Perro</span></p>
+                <p><strong>Raza:</strong> <span th:text="${mascota.raza}">Mestizo</span></p>
+                <p><strong>Edad:</strong> <span th:text="${mascota.edadAproximada + ' años'}">2 años</span></p>
+                <p><strong>Sexo:</strong> <span th:text="${mascota.sexo}">Hembra</span></p>
+
+                <div class="pet-badges">
+                    <span th:if="${mascota.vacunado}" class="badge badge-vacunado">✓ Vacunado</span>
+                    <span th:if="${mascota.esterilizado}" class="badge badge-esterilizado">✓ Esterilizado</span>
+                    <span th:if="${mascota.microchip}" class="badge badge-microchip">✓ Microchip</span>
+                </div>
+            </div>
+
+            <a th:href="@{/login}" class="adopt-btn">
+                💚 Quiero Adoptar
+            </a>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2>¿Listo para Adoptar?</h2>
+        <p>Regístrate para poder solicitar la adopción de tu mascota favorita</p>
+        <a th:href="@{/register}" class="cta-btn">Crear Cuenta Gratis</a>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
