@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -194,21 +196,8 @@
     </style>
 </head>
 <body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
 <div class="admin-layout">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>🐾 AdoptPets</h2>
-            <p style="opacity: 0.8; font-size: 14px;">Panel Admin</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a th:href="@{/admin/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/admin/mascotas}">🐶 Mascotas</a></li>
-            <li><a th:href="@{/admin/adopciones}">📋 Adopciones</a></li>
-            <li><a th:href="@{/admin/usuarios}" class="active">👥 Usuarios</a></li>
-            <li><a th:href="@{/admin/refugios}">🏠 Refugios</a></li>
-        </ul>
-    </aside>
-
     <main class="main-content">
         <div class="page-header">
             <h1>Gestión de Usuarios</h1>
@@ -286,7 +275,7 @@
         </div>
     </main>
 </div>
+<div th:replace="~{fragments/footeradmin :: ~{footeradmin}}"></div>
 <script th:src="@{/js/script.js}"></script>
-
 </body>
 </html>

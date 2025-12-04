@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adopciones Pendientes - AdoptPets</title>
     <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/pendiente.css}" rel="stylesheet">
 </head>
 <body>
-
 <div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
 <div class="admin-layout">
 
@@ -125,6 +125,7 @@
         }
     }
 </script>
+<div th:replace="~{fragments/footeradmin :: ~{footeradmin}}"></div>
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

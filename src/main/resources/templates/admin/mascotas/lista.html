@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Mascotas - AdoptPets</title>
     <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -222,6 +223,7 @@
         </div>
     </main>
 </div>
+<div th:replace="~{fragments/footeradmin :: ~{footeradmin}}"></div>
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

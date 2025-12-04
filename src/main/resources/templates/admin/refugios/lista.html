@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Refugios - AdoptPets</title>
+    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -21,36 +23,6 @@
             min-height: 100vh;
         }
 
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #22C55E 0%, #1B9E4B 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-header {
-            padding: 0 20px 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: white;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: rgba(255,255,255,0.2);
-        }
 
         .main-content {
             flex: 1;
@@ -207,21 +179,8 @@
     </style>
 </head>
 <body>
+<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
 <div class="admin-layout">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>🐾 AdoptPets</h2>
-            <p style="opacity: 0.8; font-size: 14px;">Panel Admin</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a th:href="@{/admin/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/admin/mascotas}">🐶 Mascotas</a></li>
-            <li><a th:href="@{/admin/adopciones}">📋 Adopciones</a></li>
-            <li><a th:href="@{/admin/usuarios}">👥 Usuarios</a></li>
-            <li><a th:href="@{/admin/refugios}" class="active">🏠 Refugios</a></li>
-        </ul>
-    </aside>
-
     <main class="main-content">
         <div class="page-header">
             <h1>Gestión de Refugios</h1>
@@ -292,7 +251,7 @@
         </div>
     </main>
 </div>
+<div th:replace="~{fragments/footeradmin :: ~{footeradmin}}"></div>
 <script th:src="@{/js/script.js}"></script>
-
 </body>
 </html>

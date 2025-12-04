@@ -13,7 +13,6 @@
 
 <div class="dashboard-container">
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="top-bar">
             <h1>Mi Panel de Adopciones</h1>
@@ -36,6 +35,7 @@
             <div class="stat-card">
                 <h3>Solicitudes Pendientes</h3>
                 <div class="number" th:text="${solicitudesPendientes}">0</div>
+                <li><a th:href="@{/adoptante/adopciones}" class="active">📋 Mis Adopciones</a></li>
             </div>
             <div class="stat-card">
                 <h3>Solicitudes Aprobadas</h3>
