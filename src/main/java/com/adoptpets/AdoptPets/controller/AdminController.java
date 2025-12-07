@@ -149,10 +149,37 @@ public class AdminController {
         return "redirect:/admin/adopciones";
     }
 
+    @GetMapping("/adopciones/detalle/{id}")
+    public String verDetalleAdopcion(@PathVariable Long id, Model model) {
+        // 1. Buscar la adopción por ID usando el servicio
+        com.adoptpets.AdoptPets.model.Adopcion adopcion = adopcionService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud de Adopción no encontrada con ID: " + id));
+
+        // 2. Agregar el objeto 'adopcion' al modelo
+        model.addAttribute("adopcion", adopcion);
+
+        // 3. Retornar la vista Thymeleaf (debes crear este archivo)
+        return "admin/adopciones/detalle";
+    }
+
+
     // --- GESTIÓN DE USUARIOS ---
     @GetMapping("/usuarios")
     public String listarUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+        // 1. Obtener la lista completa de usuarios
+        java.util.List<com.adoptpets.AdoptPets.model.Usuario> usuarios = usuarioService.listarTodos();
+        model.addAttribute("usuarios", usuarios);
+        long cantidadActivos = usuarios.stream()
+                .filter(com.adoptpets.AdoptPets.model.Usuario::getActivo)
+                .count();
+        model.addAttribute("cantidadActivos", cantidadActivos);
+
+        long cantidadAdoptantes = usuarios.stream()
+                .filter(u -> u.getRoles().stream() //
+                        .anyMatch(r -> "ROLE_ADOPTANTE".equals(r.getNombreRol()))) //
+                .count();
+        model.addAttribute("cantidadAdoptantes", cantidadAdoptantes);
+
         return "admin/usuarios/lista";
     }
 
@@ -162,6 +189,46 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
         return "admin/usuarios/form";
+    }
+
+    @PostMapping("/usuarios/actualizar")
+    public String actualizarUsuario(@ModelAttribute Usuario usuarioActualizado, RedirectAttributes flash) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(usuarioActualizado.getIdUsuario())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            usuario.setNombre(usuarioActualizado.getNombre());
+            usuario.setApellido(usuarioActualizado.getApellido());
+            usuario.setTelefono(usuarioActualizado.getTelefono());
+            usuario.setDireccion(usuarioActualizado.getDireccion());
+            usuario.setCiudad(usuarioActualizado.getCiudad());
+            usuario.setCedula(usuarioActualizado.getCedula());
+            usuario.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
+            usuario.setActivo(usuarioActualizado.getActivo());
+
+            usuarioService.guardar(usuario);
+            flash.addFlashAttribute("success", "Usuario actualizado exitosamente");
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al actualizar usuario: " + e.getMessage());
+        }
+        return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/usuarios/resetear-password/{id}")
+    public String resetearPassword(@PathVariable Long id, RedirectAttributes flash) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Resetear a contraseña por defecto
+            usuario.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("123456"));
+            usuarioService.guardar(usuario);
+
+            flash.addFlashAttribute("success", "Contraseña reseteada a: 123456");
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al resetear contraseña: " + e.getMessage());
+        }
+        return "redirect:/admin/usuarios";
     }
 
     @PostMapping("/usuarios/toggle/{id}")

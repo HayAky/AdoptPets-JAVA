@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - AdoptPets</title>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link th:href="@{/css/register.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <style>
+        .tipo-registro {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .tipo-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tipo-btn:hover {
+            border-color: #22C55E;
+            background: #f0fdf4;
+        }
+
+        .tipo-btn.active {
+            border-color: #22C55E;
+            background: #dcfce7;
+        }
+
+        .tipo-btn input[type="radio"] {
+            display: none;
+        }
+
+        .tipo-btn .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .tipo-btn .label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .tipo-btn .description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .refugio-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .refugio-info.active {
+            display: block;
+        }
+
+        .refugio-info h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .refugio-info p {
+            color: #1e3a8a;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<section class="registro-container">
+    <div class="registro-formulario">
+        <h1>AdoptPets</h1>
+        <h2>CREAR CUENTA</h2>
+        <p>Regístrate para encontrar y adoptar a tu nuevo amigo</p>
+
+        <div th:if="${error}" style="color: #ef4444; background: #fee2e2; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <span th:text="${error}">Error</span>
+        </div>
+
+        <div class="tipo-registro">
+            <label class="tipo-btn" id="tipo-adoptante" onclick="seleccionarTipo('adoptante')">
+                <input type="radio" name="tipo" value="adoptante" checked>
+                <div class="icon">🏠</div>
+                <div class="label">Adoptante</div>
+                <div class="description">Quiero adoptar una mascota</div>
+            </label>
+            <label class="tipo-btn" id="tipo-refugio" onclick="seleccionarTipo('refugio')">
+                <input type="radio" name="tipo" value="refugio">
+                <div class="icon">🏢</div>
+                <div class="label">Refugio</div>
+                <div class="description">Represento un refugio</div>
+            </label>
+        </div>
+
+        <div class="refugio-info" id="refugio-info">
+            <h4>📋 Registro como Refugio</h4>
+            <p>
+                Al registrarte como refugio podrás gestionar tus mascotas, revisar solicitudes de adopción
+                y mantener un registro completo. Después del registro, completa la información de tu refugio
+                en la sección de perfil.
+            </p>
+        </div>
+
+        <form method="post" th:action="@{/register}" th:object="${usuario}">
+            <input type="hidden" id="tipoRegistro" name="tipoRegistro" value="adoptante">
+
+            <div class="fila">
+                <input type="text" th:field="*{nombre}" placeholder="Nombre" required>
+                <input type="text" th:field="*{apellido}" placeholder="Apellido" required>
+            </div>
+            <div class="fila">
+                <input type="email" th:field="*{email}" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="fila">
+                <input type="password" th:field="*{password}" placeholder="Contraseña" required minlength="6">
+                <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" required minlength="6">
+            </div>
+            <div class="fila">
+                <input type="text" th:field="*{direccion}" placeholder="Dirección">
+                <input type="text" th:field="*{telefono}" placeholder="Teléfono">
+            </div>
+            <div class="fila">
+                <select>
+                    <option disabled selected>Tipo de doc...</option>
+                    <option value="cc">C.C.</option>
+                    <option value="ce">C.E.</option>
+                    <option value="ti">T.I.</option>
+                    <option value="pp">P.P.</option>
+                </select>
+                <input type="text" th:field="*{cedula}" placeholder="Número de documento">
+            </div>
+            <div class="fila">
+                <input type="date" th:field="*{fechaNacimiento}" placeholder="Fecha de nacimiento">
+                <input type="text" th:field="*{ciudad}" placeholder="Ciudad" value="Bogotá">
+            </div>
+
+            <button type="submit">Registrarse</button>
+
+            <div class="terminos">
+                <input type="checkbox" id="terminos" required>
+                <label for="terminos">Acepta Términos y condiciones</label>
+            </div>
+        </form>
+        <p class="login-link">¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
+    </div>
+
+    <div class="registro-imagen">
+        <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz en auto">
+    </div>
+</section>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
+
+<script>
+    // Verificar tipo de registro desde el servidor
+    const tipoParam = new URLSearchParams(window.location.search).get('tipo');
+    if (tipoParam === 'refugio') {
+        seleccionarTipo('refugio');
+    } else if ([[${tipo}]] === 'refugio') {
+        seleccionarTipo('refugio');
+    }
+
+    function seleccionarTipo(tipo) {
+        // Actualizar campo oculto
+        document.getElementById('tipoRegistro').value = tipo;
+
+        // Actualizar estilos
+        document.getElementById('tipo-adoptante').classList.remove('active');
+        document.getElementById('tipo-refugio').classList.remove('active');
+
+        if (tipo === 'refugio') {
+            document.getElementById('tipo-refugio').classList.add('active');
+            document.getElementById('refugio-info').classList.add('active');
+        } else {
+            document.getElementById('tipo-adoptante').classList.add('active');
+            document.getElementById('refugio-info').classList.remove('active');
+        }
+
+        // Actualizar radios
+        document.querySelectorAll('input[name="tipo"]').forEach(radio => {
+            radio.checked = radio.value === tipo;
+        });
+    }
+</script>
+</body>
+</html>

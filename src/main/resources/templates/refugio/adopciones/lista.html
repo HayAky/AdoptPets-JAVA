@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adopciones - Refugio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .page-header h1 {
+            color: #3b82f6;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .adoption-cards {
+            display: grid;
+            gap: 20px;
+        }
+
+        .adoption-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 150px 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .adoption-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .adoption-info h3 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .adoption-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .adoption-info strong {
+            color: #333;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .adoption-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 15px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🏠 Refugio</h2>
+            <p style="opacity: 0.8; font-size: 14px;">Panel de Gestión</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/refugio/dashboard}">📊 Dashboard</a></li>
+            <li><a th:href="@{/refugio/mascotas}">🐶 Mis Mascotas</a></li>
+            <li><a th:href="@{/refugio/adopciones}" class="active">📋 Adopciones</a></li>
+            <li><a th:href="@{/refugio/perfil}">⚙️ Mi Refugio</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Solicitudes de Adopción</h1>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}">
+            Operación exitosa
+        </div>
+
+        <div class="filters">
+            <form class="filter-form" method="get" th:action="@{/refugio/adopciones}">
+                <div class="form-group">
+                    <label>Filtrar por Estado</label>
+                    <select name="estado">
+                        <option value="">Todas</option>
+                        <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendientes</option>
+                        <option value="APROBADA" th:selected="${estadoFiltro == 'APROBADA'}">Aprobadas</option>
+                        <option value="COMPLETADA" th:selected="${estadoFiltro == 'COMPLETADA'}">Completadas</option>
+                        <option value="RECHAZADA" th:selected="${estadoFiltro == 'RECHAZADA'}">Rechazadas</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a th:href="@{/refugio/adopciones}" class="btn btn-secondary">Limpiar</a>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(adopciones)}" class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h3>No hay solicitudes de adopción</h3>
+            <p>Las solicitudes aparecerán aquí cuando los usuarios soliciten adoptar tus mascotas</p>
+        </div>
+
+        <div class="adoption-cards">
+            <div th:each="adopcion : ${adopciones}" class="adoption-card">
+                <img th:src="@{${adopcion.mascota.fotos != null && !adopcion.mascota.fotos.isEmpty() ?
+                                    adopcion.mascota.fotos[0].urlFoto : '/img/default-pet.jpg'}}"
+                     th:alt="${adopcion.mascota.nombre}">
+
+                <div class="adoption-info">
+                    <h3 th:text="${adopcion.mascota.nombre}">Luna</h3>
+                    <p><strong>Solicitante:</strong>
+                        <span th:text="${adopcion.adoptante.nombre + ' ' + adopcion.adoptante.apellido}">Usuario</span>
+                    </p>
+                    <p><strong>Email:</strong> <span th:text="${adopcion.adoptante.email}">email@example.com</span></p>
+                    <p><strong>Teléfono:</strong> <span th:text="${adopcion.adoptante.telefono}">300-000-0000</span></p>
+                    <p><strong>Fecha:</strong>
+                        <span th:text="${#temporals.format(adopcion.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</span>
+                    </p>
+
+                    <span class="badge"
+                          th:classappend="${adopcion.estadoAdopcion.name() == 'PENDIENTE' ? 'badge-pending' :
+                                             adopcion.estadoAdopcion.name() == 'APROBADA' ? 'badge-approved' :
+                                             adopcion.estadoAdopcion.name() == 'COMPLETADA' ? 'badge-completed' : 'badge-rejected'}"
+                          th:text="${adopcion.estadoAdopcion}">
+                            PENDIENTE
+                        </span>
+                </div>
+
+                <div class="adoption-actions">
+                    <a th:href="@{/refugio/adopciones/{id}(id=${adopcion.idAdopcion})}"
+                       class="btn btn-primary">
+                        Ver Detalles
+                    </a>
+
+                    <form th:if="${adopcion.estadoAdopcion.name() == 'PENDIENTE'}"
+                          method="post"
+                          th:action="@{/refugio/adopciones/aprobar/{id}(id=${adopcion.idAdopcion})}"
+                          style="display: inline;">
+                        <button type="submit" class="btn" style="background: #22C55E; color: white; width: 100%;">
+                            ✅ Aprobar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

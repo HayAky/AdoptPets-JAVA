@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Refugio - AdoptPets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .top-bar h1 {
+            color: #3b82f6;
+        }
+
+        .profile-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            max-width: 900px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 20px;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🏠 Refugio</h2>
+            <p style="opacity: 0.8; font-size: 14px;">Panel de Gestión</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/refugio/dashboard}">📊 Dashboard</a></li>
+            <li><a th:href="@{/refugio/mascotas}">🐶 Mis Mascotas</a></li>
+            <li><a th:href="@{/refugio/adopciones}">📋 Adopciones</a></li>
+            <li><a th:href="@{/refugio/perfil}" class="active">⚙️ Mi Refugio</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <h1>Configuración del Refugio</h1>
+        </div>
+
+        <div class="profile-container">
+            <div th:if="${success}" class="alert alert-success" th:text="${success}">
+                Perfil actualizado exitosamente
+            </div>
+
+            <div th:if="${refugio == null || refugio.idRefugio == null}" class="alert alert-info">
+                <h4>⚠️ Completa la Información de tu Refugio</h4>
+                <p>
+                    Aún no has completado la información de tu refugio.
+                    Por favor, llena el siguiente formulario para poder comenzar a gestionar tus mascotas.
+                </p>
+            </div>
+
+            <form method="post" th:action="@{/refugio/perfil/actualizar}" th:object="${refugio}">
+                <input type="hidden" th:field="*{idRefugio}" />
+
+                <h3 class="section-title">🏢 Información del Refugio</h3>
+
+                <div class="form-group">
+                    <label for="nombreRefugio">Nombre del Refugio *</label>
+                    <input type="text" id="nombreRefugio" th:field="*{nombreRefugio}" required
+                           placeholder="Ej: Fundación Protectora de Animales">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="responsable">Responsable *</label>
+                        <input type="text" id="responsable" th:field="*{responsable}" required
+                               placeholder="Nombre del responsable">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="localidad">Localidad *</label>
+                        <input type="text" id="localidad" th:field="*{localidad}" required
+                               placeholder="Ej: Chapinero, Usaquén...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección *</label>
+                    <input type="text" id="direccion" th:field="*{direccion}" required
+                           placeholder="Calle 123 #45-67">
+                </div>
+
+                <h3 class="section-title">📞 Información de Contacto</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" id="telefono" th:field="*{telefono}"
+                               placeholder="601-234-5678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:field="*{email}"
+                               placeholder="contacto@refugio.com">
+                    </div>
+                </div>
+
+                <h3 class="section-title">📋 Detalles Adicionales</h3>
+
+                <div class="form-group">
+                    <label for="capacidadMaxima">Capacidad Máxima de Mascotas</label>
+                    <input type="number" id="capacidadMaxima" th:field="*{capacidadMaxima}"
+                           min="1" placeholder="Número de mascotas que puede albergar">
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción del Refugio</label>
+                    <textarea id="descripcion" th:field="*{descripcion}"
+                              placeholder="Describe tu refugio: servicios, misión, años de experiencia..."></textarea>
+                </div>
+
+                <div class="checkbox-item">
+                    <input type="checkbox" id="activo" th:field="*{activo}">
+                    <label for="activo">Refugio Activo (Visible en el sistema)</label>
+                </div>
+
+                <div class="info-card">
+                    <h4>ℹ️ Información Importante</h4>
+                    <p>
+                        • Esta información será visible para los adoptantes<br>
+                        • Asegúrate de mantener tus datos de contacto actualizados<br>
+                        • La capacidad máxima te ayudará a controlar el número de mascotas<br>
+                        • Puedes desactivar tu refugio temporalmente si lo necesitas
+                    </p>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">💾 Guardar Información</button>
+                    <a th:href="@{/refugio/dashboard}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

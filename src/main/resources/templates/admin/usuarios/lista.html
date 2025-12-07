@@ -210,13 +210,12 @@
             </div>
             <div class="stat-card">
                 <h3>Usuarios Activos</h3>
-                <div class="number" th:text="${usuarios.stream().filter(u -> u.activo).count()}">0</div>
+                <span th:text="${cantidadActivos}"></span>
             </div>
             <div class="stat-card">
                 <h3>Adoptantes</h3>
-                <div class="number"
-                     th:text="${usuarios.stream().filter(u -> u.roles.stream().anyMatch(r -> r.nombreRol == 'ROLE_ADOPTANTE')).count()}">
-                    0
+                <div class="number">
+                    <span th:text="${cantidadAdoptantes}"></span>                    0
                 </div>
             </div>
         </div>
