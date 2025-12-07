@@ -47,6 +47,13 @@
                 <input type="date" th:field="*{fechaNacimiento}" required placeholder="Fecha de nacimiento">
             </div>
 
+            <div class="fila">
+                <input type="password" name="confirmPassword" placeholder="Confirmar contraseña" required minlength="8">
+            </div>
+
+            <input type="hidden" name="tipoRegistro" th:value="${tipo}">
+
+
             <button type="submit">Registrarse</button>
 
             <div class="terminos">
