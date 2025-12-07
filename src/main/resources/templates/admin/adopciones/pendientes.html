@@ -13,19 +13,6 @@
 <div class="admin-layout">
 
     <main class="main-content">
-        <div class="page-header">
-            <h1>Solicitudes de Adopción Pendientes</h1>
-        </div>
-
-        <div th:if="${success}" class="alert alert-success" th:text="${success}">
-            Operación exitosa
-        </div>
-
-        <div th:if="${#lists.isEmpty(adopciones)}" class="empty-state">
-            <div class="empty-state-icon">✅</div>
-            <h3>No hay solicitudes pendientes</h3>
-            <p>Todas las solicitudes han sido procesadas</p>
-        </div>
 
         <div th:each="adopcion : ${adopciones}" class="adoption-card">
             <div class="card-header">
