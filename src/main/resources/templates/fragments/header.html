@@ -1,4 +1,4 @@
-<header th:fragment="~{header}">
+<header th:fragment="header">
     <div class="contenedor">
         <a th:href="@{/main}" class="logo">
             <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
@@ -6,7 +6,7 @@
         <nav>
             <a th:href="@{/adoptante/mascotas}" class="nav-link">Mascotas</a>
             <a href="" class="nav-link">Refugios</a>
-            <a th:href="contactanos" class="nav-link">Contactanos</a>
+            <a th:href="@{/contactenos}" class="nav-link">Contáctanos</a>
             <a th:href="@{/login}" class="boton">Iniciar sesion</a>
         </nav>
     </div>

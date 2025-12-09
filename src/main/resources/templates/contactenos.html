@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contáctanos</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/img/perrito3.png');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: green;
+        }
+
+        /* Logo solo */
+        .logo-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .logo-container img {
+            width: 300px; /* Logo más grande */
+        }
+
+        .form-container {
+            width: 420px;
+            margin: 40px auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.80);
+            border-radius: 12px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            font-weight: bold;
+        }
+
+        .form-container input,
+        .form-container textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid green;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .botones {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .btn-enviar {
+            background: green;
+            color: white;
+        }
+
+        .btn-cancelar {
+            background: #ccc;
+            color: black;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background: white;
+            width: 350px;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-content button {
+            margin-top: 15px;
+            background: green;
+            color: white;
+            padding: 10px 20px;
+        }
+    </style>
+
+    <script>
+        function enviarFormulario() {
+            document.getElementById("modal").style.display = "block";
+        }
+
+        function aceptar() {
+            window.location.href = "/main";
+        }
+
+        function cancelar() {
+            window.location.href = "/main";
+        }
+    </script>
+
+</head>
+<body>
+
+<!-- LOGO AdoptPets solo -->
+<div class="logo-container">
+    <img src="/img/AdoptPets.png" alt="AdoptPets">
+</div>
+
+<div class="form-container">
+    <h2>Contáctanos</h2>
+
+    <label>Nombre</label>
+    <input type="text" placeholder="Tu nombre" required>
+
+    <label>Correo</label>
+    <input type="email" placeholder="Tu correo" required>
+
+    <!-- Número de celular -->
+    <label>Número de celular</label>
+    <input type="text" placeholder="Ej: 3001234567" required>
+
+    <label>Mensaje</label>
+    <textarea rows="4" placeholder="Escribe tu mensaje..." required></textarea>
+
+    <div class="botones">
+        <button class="btn-enviar" onclick="enviarFormulario()">ENVIAR</button>
+        <button class="btn-cancelar" onclick="cancelar()">CANCELAR</button>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h3>Mensaje enviado</h3>
+        <p>En 3 días nos contactaremos contigo.</p>
+        <button onclick="aceptar()">Aceptar</button>
+    </div>
+</div>
+
+</body>
+</html>

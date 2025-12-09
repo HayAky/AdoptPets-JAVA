@@ -28,10 +28,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/main",
+                                "/contactenos",
+                                "/contactenos/**",
                                 "/register",
                                 "/login",
-                                "/about",
-                                "/contacto",
+                                "/about",                             
                                 "/adoptar",
                                 "/css/**",
                                 "/js/**",
