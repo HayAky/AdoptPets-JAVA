@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header">
+    <div class="contenedor" id="headerup">
+        <a th:href="@{/main}" class="logo">
+            <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina"/>
+        </a>
+
+        <nav>
+            <!-- Vínculos públicos -->
+            <a th:href="@{/adoptante/mascotas}" class="nav-link" sec:authorize="isAnonymous() or isAuthenticated()">Mascotas</a>
+            <a th:href="@{/contactenos}" class="nav-link" sec:authorize="isAnonymous() or isAuthenticated()">Contáctanos</a>
+
+            <!-- Si no está autenticado: botón iniciar sesión -->
+            <a th:href="@{/login}" class="boton" sec:authorize="isAnonymous()">Iniciar sesión</a>
+
+            <!-- Usuario autenticado - rol ADOPTANTE -->
+            <div sec:authorize="hasRole('ADOPTANTE')" class="user-block">
+                <span sec:authentication="name">Usuario</span>
+                <a th:href="@{/adoptante/mascotas}">Mis mascotas</a>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="logout-btn">Cerrar sesión</button>
+                </form>
+            </div>
+
+            <!-- Usuario autenticado - rol ADMIN -->
+            <div sec:authorize="hasRole('ADMIN')" class="admin-block">
+                <span sec:authentication="name">Admin</span>
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/mascotas}">Mascotas</a>
+                <a th:href="@{/admin/adopciones}">Adopciones</a>
+                <a th:href="@{/admin/refugios}">Refugios</a>
+                <a th:href="@{/admin/usuarios}">Usuarios</a>
+
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="logout-btn">Cerrar sesión</button>
+                </form>
+            </div>
+        </nav>
+    </div>
+
+    <!-- opcional: barra secundaria para admin (se muestra solo a admin) -->
+    <div class="headadmin" sec:authorize="hasRole('ADMIN')">
+        <nav>
+            <a th:href="@{/main}">Ir al sitio</a>
+            <a th:href="@{/admin/dashboard}" class="active">Dashboard</a>
+            <a th:href="@{/admin/mascotas}">Mascotas</a>
+            <a th:href="@{/admin/adopciones}">Adopciones</a>
+            <a th:href="@{/admin/refugios}">Refugios</a>
+            <a th:href="@{/admin/usuarios}">Usuarios</a>
+            <a th:href="@{/admin/reportes}">Reportes</a>
+        </nav>
+    </div>
+
+    <div id="header-spacer"></div>
+</header>
+</body>
+</html>

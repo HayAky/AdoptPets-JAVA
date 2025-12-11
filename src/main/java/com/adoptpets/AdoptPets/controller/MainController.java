@@ -1,6 +1,7 @@
 package com.adoptpets.AdoptPets.controller;
 
 import com.adoptpets.AdoptPets.service.MascotaService;
+import com.adoptpets.AdoptPets.service.RefugioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,9 @@ public class MainController {
     @Autowired
     private MascotaService mascotaService;
 
+    @Autowired
+    private RefugioService refugioService;
+
     @GetMapping("/")
     public String redireccionarRaiz(){
         return "redirect:/main";
@@ -20,28 +24,50 @@ public class MainController {
 
     @GetMapping("/main")
     public String welcome(Model model){
-        // Estadísticas para la página principal
         Long mascotasDisponibles = mascotaService.contarDisponibles();
         model.addAttribute("mascotasDisponibles", mascotasDisponibles);
         return "main";
     }
 
     @GetMapping("/adoptar")
-    public String verMascotasPublico(Model model,
-                                     @RequestParam(required = false) String especie,
-                                     @RequestParam(required = false) String busqueda) {
-        if (busqueda != null && !busqueda.isEmpty()) {
-            model.addAttribute("mascotas", mascotaService.buscar(busqueda));
-        } else if (especie != null && !especie.isEmpty()) {
-            model.addAttribute("mascotas", mascotaService.buscarPorEspecie(especie));
-        } else {
-            model.addAttribute("mascotas", mascotaService.listarDisponibles());
-        }
+    public String verMascotasPublico(
+            Model model,
+            @RequestParam(required = false) String especie,
+            @RequestParam(required = false) String sexo,
+            @RequestParam(required = false) String tamano,
+            @RequestParam(required = false) String raza,
+            @RequestParam(required = false) Integer edadMin,
+            @RequestParam(required = false) Integer edadMax,
+            @RequestParam(required = false) Boolean vacunado,
+            @RequestParam(required = false) Boolean esterilizado,
+            @RequestParam(required = false) Boolean microchip,
+            @RequestParam(required = false) Long refugioId,
+            @RequestParam(required = false) String busqueda) {
 
+        // Usar filtros avanzados
+        var mascotas = mascotaService.buscarConFiltros(
+                especie, sexo, tamano, raza, edadMin, edadMax,
+                vacunado, esterilizado, microchip, refugioId, busqueda
+        );
+
+        // Lista de refugios para el filtro
+        var refugios = refugioService.listarActivos();
+
+        model.addAttribute("mascotas", mascotas);
+        model.addAttribute("refugios", refugios);
         model.addAttribute("especie", especie);
+        model.addAttribute("sexo", sexo);
+        model.addAttribute("tamano", tamano);
+        model.addAttribute("raza", raza);
+        model.addAttribute("edadMin", edadMin);
+        model.addAttribute("edadMax", edadMax);
+        model.addAttribute("vacunado", vacunado);
+        model.addAttribute("esterilizado", esterilizado);
+        model.addAttribute("microchip", microchip);
+        model.addAttribute("refugioId", refugioId);
         model.addAttribute("busqueda", busqueda);
 
-        return "public/mascotas";
+        return "mascotas";
     }
 
     @GetMapping("/contacto")

@@ -3,6 +3,7 @@ package com.adoptpets.AdoptPets.controller;
 import com.adoptpets.AdoptPets.model.Adopcion;
 import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.model.Usuario;
+import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import com.adoptpets.AdoptPets.repository.UsuarioRepository;
 import com.adoptpets.AdoptPets.service.AdopcionService;
 import com.adoptpets.AdoptPets.service.MascotaService;
@@ -137,7 +138,7 @@ public class AdoptanteController {
         Mascota mascota = mascotaService.buscarPorId(mascotaId)
                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
 
-        if (!"disponible".equals(mascota.getEstadoAdopcion())) {
+        if (mascota.getEstadoAdopcion() != EstadoAdopcion.disponible) {
             flash.addFlashAttribute("error", "La mascota ya no está disponible");
             return "redirect:/adoptante/mascotas";
         }

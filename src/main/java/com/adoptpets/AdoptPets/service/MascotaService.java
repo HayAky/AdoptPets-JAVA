@@ -1,8 +1,11 @@
 package com.adoptpets.AdoptPets.service;
 
 import com.adoptpets.AdoptPets.model.Mascota;
+import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import com.adoptpets.AdoptPets.repository.MascotaRepository;
+import com.adoptpets.AdoptPets.specification.MascotaSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,29 @@ public class MascotaService {
         return mascotaRepository.findMascotasDisponibles();
     }
 
+    /**
+     * Búsqueda avanzada con múltiples filtros
+     */
+    public List<Mascota> buscarConFiltros(
+            String especie,
+            String sexo,
+            String tamano,
+            String raza,
+            Integer edadMin,
+            Integer edadMax,
+            Boolean vacunado,
+            Boolean esterilizado,
+            Boolean microchip,
+            Long refugioId,
+            String busqueda
+    ) {
+        Specification<Mascota> spec = MascotaSpecification.conFiltros(
+                especie, sexo, tamano, raza, edadMin, edadMax,
+                vacunado, esterilizado, microchip, refugioId, busqueda
+        );
+        return mascotaRepository.findAll(spec);
+    }
+
     public Optional<Mascota> buscarPorId(Long id) {
         return mascotaRepository.findById(id);
     }
@@ -41,7 +67,7 @@ public class MascotaService {
     }
 
     public List<Mascota> buscarPorEspecie(String especie) {
-        return mascotaRepository.findByEspecieAndEstadoAdopcion(especie, "disponible");
+        return mascotaRepository.findByEspecieAndEstadoAdopcion(especie, EstadoAdopcion.disponible);
     }
 
     public List<Mascota> buscar(String termino) {
@@ -53,6 +79,8 @@ public class MascotaService {
     }
 
     public Long contarPorRefugioYEstado(Long refugioId, String estado) {
-        return mascotaRepository.countByRefugioAndEstado(refugioId, estado);
+        EstadoAdopcion enumEstado = EstadoAdopcion.valueOf(estado);
+        return mascotaRepository.countByRefugioAndEstado(refugioId, enumEstado);
     }
+
 }
