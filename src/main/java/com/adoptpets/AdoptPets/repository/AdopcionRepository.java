@@ -4,6 +4,7 @@ import com.adoptpets.AdoptPets.model.Adopcion;
 import com.adoptpets.AdoptPets.model.Usuario;
 import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AdopcionRepository extends JpaRepository<Adopcion, Long> {
+public interface AdopcionRepository extends JpaRepository<Adopcion, Long>, JpaSpecificationExecutor<Adopcion> {
+
+    long countByEstadoAdopcion(EstadoAdopcion estado);
 
     List<Adopcion> findByAdoptante(Usuario adoptante);
 

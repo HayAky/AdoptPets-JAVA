@@ -2,6 +2,7 @@ package com.adoptpets.AdoptPets.repository;
 
 import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.model.Refugio;
+import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,11 +12,13 @@ import java.util.List;
 @Repository
 public interface MascotaRepository extends JpaRepository<Mascota, Long> {
 
-    List<Mascota> findByEstadoAdopcion(String estado);
+    List<Mascota> findByEstadoAdopcion(EstadoAdopcion estado);
 
     List<Mascota> findByRefugio(Refugio refugio);
 
     List<Mascota> findByEspecieAndEstadoAdopcion(String especie, String estado);
+
+    long countByEstadoAdopcion(EstadoAdopcion estado);
 
     @Query("SELECT m FROM Mascota m WHERE m.estadoAdopcion = 'disponible' ORDER BY m.fechaIngreso DESC")
     List<Mascota> findMascotasDisponibles();
@@ -33,4 +36,5 @@ public interface MascotaRepository extends JpaRepository<Mascota, Long> {
             "OR LOWER(m.especie) LIKE LOWER(CONCAT('%', :busqueda, '%')) " +
             "OR LOWER(m.raza) LIKE LOWER(CONCAT('%', :busqueda, '%'))")
     List<Mascota> buscarMascotas(@Param("busqueda") String busqueda);
+
 }
