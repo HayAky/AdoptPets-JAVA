@@ -206,13 +206,38 @@ header a:hover {
     margin-top: 2px;
 }
 
+#headadmin,
+#headrefugio {
+    position: fixed;
+    top: var(--altura-header-up);
+    left: 0;
+    right: 0;
+    z-index: 900;
+    padding: 10px 100px 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(255,255,255,1);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transition: transform 0.25s linear;
+}
+
+#headadmin nav,
+#headrefugio nav {
+    display: flex;
+    gap: 60px;
+    flex-direction: row;
+    text-align: center;
+    margin: auto;
+}
+
 
 
 body.scroll-hide-header #headerup,
-body.scroll-hide-header #headadmin {
+body.scroll-hide-header #headadmin,
+body.scroll-hide-header #headrefugio {
     transform: translateY(calc(var(--altura-header-up) * -1));
-
 }
+
 
 /* ========================================
    FOOTER - ESTILOS PÚBLICOS (Adoptantes)

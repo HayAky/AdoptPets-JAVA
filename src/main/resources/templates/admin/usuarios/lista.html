@@ -330,61 +330,119 @@
             </div>
 
             <!-- TAB REFUGIOS -->
+            <!-- TAB REFUGIOS - Reemplazar el contenido actual del tab refugios -->
             <div id="refugios" class="tab-content">
                 <div class="tab-header">
-                    <span>
-                        Total: <strong th:text="${cantidadRefugios}">0</strong> refugios
-                    </span>
-                    <a th:href="@{/admin/usuarios/refugio/nuevo}" class="btn btn-primary">
-                        ➕ Nuevo Usuario Refugio
+        <span>
+            Total: <strong th:text="${cantidadRefugios}">0</strong> refugios
+        </span>
+                    <a th:href="@{/admin/usuarios/refugio/crear-completo}" class="btn btn-primary">
+                        ➕ Crear Nuevo Refugio
                     </a>
                 </div>
+
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
+                        <th>ID Usuario</th>
+                        <th>Usuario</th>
                         <th>Email</th>
-                        <th>Roles (Debug)</th> <th>Activo</th>
+                        <th>Refugio</th>
+                        <th>Localidad</th>
+                        <th>Mascotas</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="usuario : ${listaRefugios}">
-                        <td th:text="${usuario.idUsuario}">1</td>
-                        <td th:text="${usuario.nombre} + ' ' + ${usuario.apellido}">Nombre Apellido</td>
-                        <td th:text="${usuario.email}">email@example.com</td>
-                        <td>
-                            <span th:each="rol : ${usuario.roles}" th:text="${rol.nombreRol} + ' '"></span>
-                        </td>
-                        <td>
-                            <span th:classappend="${usuario.activo ? 'badge-active' : 'badge-inactive'}"
-                                  th:text="${usuario.activo ? '✓ Activo' : '❌ Inactivo'}"
-                                  class="badge">Estado</span>
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <a th:href="@{/admin/usuarios/refugio/editar/{id}(id=${usuario.idUsuario})}"
-                                   class="btn btn-primary"
-                                   style="padding: 6px 12px;">
-                                    ✏️ Editar
-                                </a>
-                                <form th:action="@{/admin/usuarios/toggle/{id}(id=${usuario.idUsuario})}"
-                                      method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-secondary">
-                                        <span th:text="${usuario.activo ? '🔒 Desactivar' : '✅ Activar'}">Toggle</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr th:each="usuario : ${listaRefugios}">
+                            <td th:text="${usuario.idUsuario}">1</td>
+
+                            <td th:text="${usuario.nombre + ' ' + usuario.apellido}">
+                                Nombre Apellido
+                            </td>
+
+                            <td th:text="${usuario.email}">email@example.com</td>
+
+                            <!-- REFUGIO -->
+                            <td th:text="${refugioPorEmail[usuario.email] != null
+                                ? refugioPorEmail[usuario.email].nombreRefugio
+                                : 'Sin refugio configurado'}">
+                                                Refugio
+                                            </td>
+
+                                            <!-- LOCALIDAD -->
+                                            <td th:text="${refugioPorEmail[usuario.email] != null
+                                ? refugioPorEmail[usuario.email].localidad
+                                : '-'}">
+                                -
+                            </td>
+
+                        <!-- MASCOTAS -->
+                            <td style="text-align: center;"
+                                th:text="${refugioPorEmail[usuario.email] != null
+                                ? #lists.size(refugioPorEmail[usuario.email].mascotas)
+                                : '-'}">
+                                0
+                            </td>
+
+                        <!-- ESTADO -->
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${usuario.activo ? 'badge-active' : 'badge-inactive'}"
+                                      th:text="${usuario.activo ? 'Activo' : 'Inactivo'}">
+                                    Estado
+                                </span>
+                            </td>
+
+                        <!-- ACCIONES -->
+                            <td>
+                                <div class="btn-group">
+                                    <a th:href="@{/admin/usuarios/refugio/editar-completo/{id}(id=${usuario.idUsuario})}"
+                                       class="btn btn-primary">
+                                        Editar
+                                    </a>
+
+                                    <a th:href="@{/admin/usuarios/refugio/eliminar-completo/{id}(id=${usuario.idUsuario})}"
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Eliminar usuario y refugio')">
+                                        Eliminar
+                                    </a>
+
+                                    <form th:action="@{/admin/usuarios/toggle/{id}(id=${usuario.idUsuario})}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-secondary"
+                                                th:text="${usuario.activo ? 'Desactivar' : 'Activar'}">
+                                            Toggle
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
                 <div th:if="${cantidadRefugios == 0}" class="alert alert-error" style="margin-top: 15px;">
-                    No se encontraron usuarios con el rol ROLE_REFUGIO.
+                    No hay usuarios refugio registrados. Haz clic en "Crear Nuevo Refugio" para agregar uno.
                 </div>
             </div>
+
+            <style>
+                .btn-group {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                }
+
+                .btn-danger {
+                    background: #ef4444;
+                    color: white;
+                }
+
+                .btn-danger:hover {
+                    background: #dc2626;
+                }
+            </style>
         </div>
     </main>
 </div>

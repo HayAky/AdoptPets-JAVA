@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -173,7 +175,7 @@ public class AdminController {
     @GetMapping("/usuarios")
     public String listarUsuarios(Model model) {
         java.util.List<Usuario> usuarios = usuarioService.listarTodos();
-        model.addAttribute("usuarios", usuarios); // Lista completa (para adoptantes)
+        model.addAttribute("usuarios", usuarios);
 
         // 1. Calcular cantidad de activos
         long cantidadActivos = usuarios.stream()
@@ -188,14 +190,23 @@ public class AdminController {
                 .count();
         model.addAttribute("cantidadAdoptantes", cantidadAdoptantes);
 
-        // 3. NUEVO: Filtrar la lista de Refugios y calcular cantidad aquí
+        // 3. Filtrar la lista de Refugios (usuarios con rol REFUGIO)
         java.util.List<Usuario> listaRefugios = usuarios.stream()
                 .filter(u -> u.getRoles().stream()
                         .anyMatch(r -> "ROLE_REFUGIO".equals(r.getNombreRol())))
-                .toList(); // Crea una lista separada solo con refugios
+                .toList();
 
-        model.addAttribute("listaRefugios", listaRefugios); // Pasamos la lista ya filtrada
-        model.addAttribute("cantidadRefugios", listaRefugios.size()); // Pasamos el número directo
+        model.addAttribute("listaRefugios", listaRefugios);
+        model.addAttribute("cantidadRefugios", listaRefugios.size());
+
+        // 4. NUEVO: Obtener todos los refugios para mostrar la información completa
+        java.util.List<Refugio> refugios = refugioService.listarTodos();
+        model.addAttribute("refugios", refugios);
+
+        Map<String, Refugio> refugioPorEmail = refugios.stream()
+                .collect(Collectors.toMap(Refugio::getEmail, r -> r));
+
+        model.addAttribute("refugioPorEmail", refugioPorEmail);
 
         return "admin/usuarios/lista";
     }
@@ -268,7 +279,7 @@ public class AdminController {
         Usuario usuario = new Usuario();
         usuario.setActivo(true);
         model.addAttribute("usuario", usuario);
-        return "admin/usuarios/refugio-form";
+        return "refugio-completo-form";
     }
 
     @GetMapping("/usuarios/refugio/editar/{id}")
@@ -276,7 +287,7 @@ public class AdminController {
         Usuario usuario = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
-        return "admin/usuarios/refugio-form";
+        return "refugio-completo-form";
     }
 
     @PostMapping("/usuarios/refugio/guardar")
@@ -386,5 +397,196 @@ public class AdminController {
             flash.addFlashAttribute("error", "Error al actualizar refugio: " + e.getMessage());
         }
         return "redirect:/admin/refugios";
+    }
+
+    @GetMapping("/usuarios/refugio/crear-completo")
+    public String formularioCrearRefugioCompleto(Model model) {
+        Usuario usuario = new Usuario();
+        usuario.setActivo(true);
+
+        Refugio refugio = new Refugio();
+        refugio.setActivo(true);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("refugio", refugio);
+
+        return "admin/usuarios/refugio-completo-form";
+    }
+
+    /**
+     * Guarda tanto el usuario como el refugio
+     */
+    @PostMapping("/usuarios/refugio/guardar-completo")
+    public String guardarRefugioCompleto(
+            @ModelAttribute("usuario") Usuario usuario,
+            @ModelAttribute("refugio") Refugio refugio,
+            @RequestParam(required = false) String password,
+            RedirectAttributes flash) {
+        try {
+            // Validaciones
+            if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
+                flash.addFlashAttribute("error", "El email es obligatorio");
+                return "redirect:/admin/usuarios";
+            }
+
+
+            if (usuarioService.existeEmail(usuario.getEmail())) {
+                flash.addFlashAttribute("error", "El email ya está registrado");
+                return "redirect:/admin/usuarios";
+            }
+
+            if (usuario.getCedula() != null && usuarioService.existeCedula(usuario.getCedula())) {
+                flash.addFlashAttribute("error", "La cédula ya está registrada");
+                return "redirect:/admin/usuarios";
+            }
+
+            if (refugioService.existePorEmail(usuario.getEmail())) {
+                flash.addFlashAttribute("error", "Ya existe un refugio con ese email");
+                return "redirect:/admin/usuarios";
+            }
+
+            if (password == null || password.length() < 6) {
+                flash.addFlashAttribute("error", "La contraseña debe tener al menos 6 caracteres");
+                return "redirect:/admin/usuarios";
+            }
+
+            // 1. Crear el usuario
+            usuario.setPassword(passwordEncoder.encode(password));
+            Rol rolRefugio = rolRepository.findByNombreRol("ROLE_REFUGIO")
+                    .orElseThrow(() -> new RuntimeException("Rol REFUGIO no encontrado"));
+            Set<Rol> roles = new HashSet<>();
+            roles.add(rolRefugio);
+            usuario.setRoles(roles);
+            usuario.setActivo(true);
+
+            Usuario usuarioGuardado = usuarioService.guardar(usuario);
+
+            // 2. Crear el refugio vinculado por email
+            refugio.setEmail(usuarioGuardado.getEmail());
+            refugio.setActivo(true);
+
+            // Si no se especificó responsable, usar el nombre del usuario
+            if (refugio.getResponsable() == null || refugio.getResponsable().isEmpty()) {
+                refugio.setResponsable(usuario.getNombre() + " " + usuario.getApellido());
+            }
+
+            // Si no se especificó teléfono del refugio, usar el del usuario
+            if (refugio.getTelefono() == null || refugio.getTelefono().isEmpty()) {
+                refugio.setTelefono(usuario.getTelefono());
+            }
+
+            refugioService.guardar(refugio);
+
+            flash.addFlashAttribute("success",
+                    "Refugio y usuario creados exitosamente. Email: " + usuario.getEmail());
+
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al crear refugio: " + e.getMessage());
+        }
+
+        return "redirect:/admin/usuarios";
+    }
+
+    /**
+     * Formulario para editar un refugio existente
+     */
+    @GetMapping("/usuarios/refugio/editar-completo/{id}")
+    public String formularioEditarRefugioCompleto(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Buscar el refugio por email
+        Refugio refugio = refugioService.buscarPorEmail(usuario.getEmail())
+                .orElse(new Refugio());
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("refugio", refugio);
+
+        return "admin/usuarios/refugio-completo-form";
+    }
+
+    /**
+     * Actualiza tanto el usuario como el refugio
+     */
+    @PostMapping("/usuarios/refugio/actualizar-completo")
+    public String actualizarRefugioCompleto(
+            @ModelAttribute("usuario") Usuario usuarioActualizado,
+            @ModelAttribute("refugio") Refugio refugioActualizado,
+            @RequestParam(required = false) String password,
+            RedirectAttributes flash) {
+        try {
+            // 1. Actualizar usuario
+            Usuario usuario = usuarioService.buscarPorId(usuarioActualizado.getIdUsuario())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            usuario.setNombre(usuarioActualizado.getNombre());
+            usuario.setApellido(usuarioActualizado.getApellido());
+            usuario.setTelefono(usuarioActualizado.getTelefono());
+            usuario.setDireccion(usuarioActualizado.getDireccion());
+            usuario.setCiudad(usuarioActualizado.getCiudad());
+            usuario.setCedula(usuarioActualizado.getCedula());
+            usuario.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
+            usuario.setActivo(usuarioActualizado.getActivo());
+
+            // Actualizar contraseña si se proporcionó
+            if (password != null && !password.isEmpty() && password.length() >= 6) {
+                usuario.setPassword(passwordEncoder.encode(password));
+            }
+
+            usuarioService.guardar(usuario);
+
+            // 2. Actualizar o crear refugio
+            Refugio refugio = refugioService.buscarPorEmail(usuario.getEmail())
+                    .orElse(new Refugio());
+
+            refugio.setNombreRefugio(refugioActualizado.getNombreRefugio());
+            refugio.setDireccion(refugioActualizado.getDireccion());
+            refugio.setTelefono(refugioActualizado.getTelefono());
+            refugio.setEmail(usuario.getEmail()); // Mantener sincronizado
+            refugio.setResponsable(refugioActualizado.getResponsable());
+            refugio.setLocalidad(refugioActualizado.getLocalidad());
+            refugio.setCapacidadMaxima(refugioActualizado.getCapacidadMaxima());
+            refugio.setDescripcion(refugioActualizado.getDescripcion());
+            refugio.setActivo(refugioActualizado.getActivo());
+
+            refugioService.guardar(refugio);
+
+            flash.addFlashAttribute("success", "Usuario y refugio actualizados exitosamente");
+
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
+        }
+
+        return "redirect:/admin/usuarios";
+    }
+
+    /**
+     * Elimina tanto el usuario como el refugio asociado
+     */
+    @GetMapping("/usuarios/refugio/eliminar-completo/{id}")
+    public String eliminarRefugioCompleto(@PathVariable Long id, RedirectAttributes flash) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Buscar y eliminar el refugio si existe
+            refugioService.buscarPorEmail(usuario.getEmail()).ifPresent(refugio -> {
+                try {
+                    refugioService.eliminar(refugio.getIdRefugio());
+                } catch (Exception e) {
+                    throw new RuntimeException("No se puede eliminar el refugio. Tiene mascotas asociadas.");
+                }
+            });
+
+            // Eliminar el usuario
+            usuarioService.eliminar(id);
+
+            flash.addFlashAttribute("success", "Usuario refugio y refugio eliminados exitosamente");
+
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al eliminar: " + e.getMessage());
+        }
+
+        return "redirect:/admin/usuarios";
     }
 }

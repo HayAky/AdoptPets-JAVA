@@ -6,4 +6,6 @@ import com.adoptpets.AdoptPets.model.Usuario;
 public interface UsuarioRepository  extends JpaRepository<Usuario, Long>{
     boolean existsByEmail(String email);
     Optional<Usuario> findByEmail(String correo);
+
+    boolean existsByCedula(String cedula);
 }

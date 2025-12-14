@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Adopción - Refugio</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,45 +17,20 @@
             background: #f5f7fa;
         }
 
+        /* --- LAYOUT IGUAL AL DASHBOARD --- */
         .layout {
-            display: flex;
+            display: block;
+            width: 100%;
             min-height: 100vh;
         }
 
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-header {
-            padding: 0 20px 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: white;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .sidebar-menu a:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
         .main-content {
-            flex: 1;
-            padding: 30px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
         }
+        /* -------------------------------- */
 
         .top-bar {
             background: white;
@@ -90,29 +66,12 @@
             font-weight: bold;
         }
 
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-completed { background: #dbeafe; color: #1e40af; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
 
-        .status-approved {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-completed {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-rejected {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .detail-content {
-            padding: 30px;
-        }
+        .detail-content { padding: 30px; }
 
         .detail-grid {
             display: grid;
@@ -121,15 +80,8 @@
             margin-bottom: 30px;
         }
 
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .section h3 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
+        .section { margin-bottom: 30px; }
+        .section h3 { color: #333; margin-bottom: 15px; font-size: 20px; }
 
         .info-item {
             background: #f8f9fa;
@@ -138,18 +90,8 @@
             margin-bottom: 10px;
         }
 
-        .info-item strong {
-            display: block;
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-
-        .info-item span {
-            color: #333;
-            font-size: 16px;
-            font-weight: 600;
-        }
+        .info-item strong { display: block; color: #666; font-size: 13px; margin-bottom: 5px; }
+        .info-item span { color: #333; font-size: 16px; font-weight: 600; }
 
         .observations {
             background: #f8f9fa;
@@ -157,17 +99,8 @@
             border-radius: 8px;
             margin: 15px 0;
         }
-
-        .observations strong {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .observations p {
-            color: #666;
-            line-height: 1.8;
-        }
+        .observations strong { display: block; margin-bottom: 8px; color: #333; }
+        .observations p { color: #666; line-height: 1.8; }
 
         .actions-section {
             padding: 25px 30px;
@@ -187,17 +120,8 @@
             transition: all 0.3s;
         }
 
-        .btn-success {
-            background: #22C55E;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            flex: 1;
-        }
+        .btn-success { background: #22C55E; color: white; flex: 1; }
+        .btn-danger { background: #ef4444; color: white; flex: 1; }
 
         .modal {
             display: none;
@@ -219,11 +143,7 @@
             max-width: 500px;
         }
 
-        .modal-content h3 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
+        .modal-content h3 { color: #333; margin-bottom: 20px; }
         .modal-content textarea {
             width: 100%;
             padding: 12px;
@@ -248,20 +168,9 @@
     </style>
 </head>
 <body>
-<div class="layout">
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>🏠 Refugio</h2>
-            <p style="opacity: 0.8; font-size: 14px;">Panel de Gestión</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a th:href="@{/refugio/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/refugio/mascotas}">🐶 Mis Mascotas</a></li>
-            <li><a th:href="@{/refugio/adopciones}">📋 Adopciones</a></li>
-            <li><a th:href="@{/refugio/perfil}">⚙️ Mi Refugio</a></li>
-        </ul>
-    </aside>
+<div th:replace="~{fragments/header :: ~{header}}"></div>
 
+<div class="layout">
     <main class="main-content">
         <div class="top-bar">
             <h1>Detalle de Solicitud de Adopción</h1>
@@ -377,7 +286,6 @@
     </main>
 </div>
 
-<!-- Modal para rechazar -->
 <div id="rejectModal" class="modal">
     <div class="modal-content">
         <h3>Rechazar Solicitud</h3>
@@ -409,5 +317,7 @@
         }
     }
 </script>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
+<script th:src="@{/js/script.js}"></script>
 </body>
 </html>

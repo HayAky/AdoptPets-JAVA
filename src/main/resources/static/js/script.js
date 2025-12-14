@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const headerUp = document.getElementById('headerup');
-    const headAdmin = document.getElementById('headadmin');
+
+    // MODIFICACIÓN PRINCIPAL:
+    // Intentamos buscar la barra de Admin, si no existe, buscamos la de Refugio
+    const headSecondary = document.getElementById('headadmin') || document.getElementById('headrefugio');
+
     const root = document.documentElement;
+
+    // Validación de seguridad:
+    // Si la página no tiene doble header (ej. login o adoptante), el script se detiene para no causar errores.
+    if (!headerUp || !headSecondary) return;
 
     // Variables para el scroll
     let lastScroll = 0;
@@ -9,15 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calcularAlturas() {
         const hUp = headerUp.offsetHeight;
-        const hAdmin = headAdmin.offsetHeight;
-        const hTotal = hUp + hAdmin;
+        // Usamos la variable genérica headSecondary en lugar de headAdmin
+        const hSec = headSecondary.offsetHeight;
+        const hTotal = hUp + hSec;
 
         // 1. Asignamos la altura del header superior a una variable CSS
-        // Esto coloca el header inferior justo debajo del superior automáticamente
         root.style.setProperty('--altura-header-up', `${hUp}px`);
 
         // 2. Asignamos la altura TOTAL al spacer
-        // Esto empuja el contenido de la web hacia abajo lo justo y necesario
         root.style.setProperty('--altura-header-total', `${hTotal}px`);
     }
 

@@ -51,21 +51,22 @@
 
 <!-- HEADER PARA REFUGIO -->
 <header th:fragment="header" sec:authorize="hasRole('REFUGIO') and !hasRole('ADMIN')">
-    <div class="contenedor">
+
+    <div class="contenedor" id="headerup">
         <a th:href="@{/main}" class="logo">
             <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
         </a>
         <nav>
-            <a th:href="@{/refugio/dashboard}" class="nav-link">Dashboard</a>
-            <a th:href="@{/refugio/mascotas}" class="nav-link">Mis Mascotas</a>
-            <a th:href="@{/contactenos}" class="nav-link">Contáctanos</a>
-
             <div class="user-menu">
                 <button class="user-button" type="button">
-                    <span sec:authentication="principal.nombre">Usuario</span>
+                    <span sec:authentication="principal.nombre">Refugio</span>
                 </button>
 
                 <div class="user-dropdown">
+                    <a th:href="@{/refugio/perfil}" class="dropdown-link" style="display:block; padding: 10px 20px; color: #333; text-decoration: none;">
+                        Configurar Refugio
+                    </a>
+
                     <form th:action="@{/logout}" method="post">
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
@@ -76,9 +77,20 @@
                     </form>
                 </div>
             </div>
-
         </nav>
     </div>
+
+    <div class="headadmin" id="headrefugio">
+        <nav>
+            <a th:href="@{/main}">Ir al sitio</a>
+            <a th:href="@{/refugio/dashboard}">Dashboard</a>
+            <a th:href="@{/refugio/mascotas}">Mis Mascotas</a>
+            <a th:href="@{/refugio/adopciones}">Solicitudes</a>
+            <a th:href="@{/contactenos}">Contáctanos</a>
+        </nav>
+    </div>
+
+    <div id="header-spacer"></div>
 </header>
 
 <header th:fragment="header"

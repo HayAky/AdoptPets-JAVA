@@ -16,6 +16,11 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public boolean existeCedula(String cedula) {
+        return usuarioRepository.existsByCedula(cedula);
+    }
+
+
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }

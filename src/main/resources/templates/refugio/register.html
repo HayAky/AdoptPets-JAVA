@@ -82,7 +82,7 @@
     </style>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/header :: ~{header}}"></div>
 <section class="registro-container">
     <div class="registro-formulario">
         <h1>AdoptPets</h1>
@@ -165,7 +165,7 @@
         <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz en auto">
     </div>
 </section>
-<div th:replace="~{fragments/footer-old :: ~{footer}}"></div>
+<div th:replace="~{fragments/footer :: ~{footer}}"></div>
 
 <script>
     // Verificar tipo de registro desde el servidor
