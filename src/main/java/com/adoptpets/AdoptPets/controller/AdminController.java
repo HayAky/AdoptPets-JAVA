@@ -3,8 +3,10 @@ package com.adoptpets.AdoptPets.controller;
 import com.adoptpets.AdoptPets.model.Mascota;
 import com.adoptpets.AdoptPets.model.Refugio;
 import com.adoptpets.AdoptPets.model.Usuario;
+import com.adoptpets.AdoptPets.model.Rol;
 import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import com.adoptpets.AdoptPets.service.*;
+import com.adoptpets.AdoptPets.repository.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,6 +34,9 @@ public class AdminController {
 
     @Autowired
     private RefugioService refugioService;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -155,34 +163,39 @@ public class AdminController {
 
     @GetMapping("/adopciones/detalle/{id}")
     public String verDetalleAdopcion(@PathVariable Long id, Model model) {
-        // 1. Buscar la adopción por ID usando el servicio
         com.adoptpets.AdoptPets.model.Adopcion adopcion = adopcionService.buscarPorId(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud de Adopción no encontrada con ID: " + id));
-
-        // 2. Agregar el objeto 'adopcion' al modelo
         model.addAttribute("adopcion", adopcion);
-
-        // 3. Retornar la vista Thymeleaf (debes crear este archivo)
         return "admin/adopciones/detalle";
     }
 
-
-    // --- GESTIÓN DE USUARIOS ---
+    // --- GESTIÓN DE USUARIOS ADOPTANTES ---
     @GetMapping("/usuarios")
     public String listarUsuarios(Model model) {
-        // 1. Obtener la lista completa de usuarios
-        java.util.List<com.adoptpets.AdoptPets.model.Usuario> usuarios = usuarioService.listarTodos();
-        model.addAttribute("usuarios", usuarios);
+        java.util.List<Usuario> usuarios = usuarioService.listarTodos();
+        model.addAttribute("usuarios", usuarios); // Lista completa (para adoptantes)
+
+        // 1. Calcular cantidad de activos
         long cantidadActivos = usuarios.stream()
-                .filter(com.adoptpets.AdoptPets.model.Usuario::getActivo)
+                .filter(Usuario::getActivo)
                 .count();
         model.addAttribute("cantidadActivos", cantidadActivos);
 
+        // 2. Calcular cantidad de Adoptantes
         long cantidadAdoptantes = usuarios.stream()
-                .filter(u -> u.getRoles().stream() //
-                        .anyMatch(r -> "ROLE_ADOPTANTE".equals(r.getNombreRol()))) //
+                .filter(u -> u.getRoles().stream()
+                        .anyMatch(r -> "ROLE_ADOPTANTE".equals(r.getNombreRol())))
                 .count();
         model.addAttribute("cantidadAdoptantes", cantidadAdoptantes);
+
+        // 3. NUEVO: Filtrar la lista de Refugios y calcular cantidad aquí
+        java.util.List<Usuario> listaRefugios = usuarios.stream()
+                .filter(u -> u.getRoles().stream()
+                        .anyMatch(r -> "ROLE_REFUGIO".equals(r.getNombreRol())))
+                .toList(); // Crea una lista separada solo con refugios
+
+        model.addAttribute("listaRefugios", listaRefugios); // Pasamos la lista ya filtrada
+        model.addAttribute("cantidadRefugios", listaRefugios.size()); // Pasamos el número directo
 
         return "admin/usuarios/lista";
     }
@@ -224,26 +237,12 @@ public class AdminController {
             Usuario usuario = usuarioService.buscarPorId(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Resetear a contraseña por defecto
             usuario.setPassword(passwordEncoder.encode("123456"));
             usuarioService.guardar(usuario);
 
             flash.addFlashAttribute("success", "Contraseña reseteada a: 123456");
         } catch (Exception e) {
             flash.addFlashAttribute("error", "Error al resetear contraseña: " + e.getMessage());
-        }
-        return "redirect:/admin/usuarios";
-    }
-
-    @GetMapping("/usuarios/eliminar/{id}")
-    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes flash) {
-        try {
-            // Llamamos al método que ya tienes en tu servicio
-            usuarioService.eliminar(id);
-            flash.addFlashAttribute("success", "Usuario eliminado exitosamente");
-        } catch (Exception e) {
-            // Capturamos errores (por ejemplo, si el usuario tiene adopciones vinculadas y la BD impide borrarlo)
-            flash.addFlashAttribute("error", "No se puede eliminar el usuario. Es probable que tenga solicitudes o registros asociados.");
         }
         return "redirect:/admin/usuarios";
     }
@@ -261,7 +260,72 @@ public class AdminController {
             flash.addFlashAttribute("error", "Error al actualizar usuario: " + e.getMessage());
         }
         return "redirect:/admin/usuarios";
+    }
 
+    // --- GESTIÓN DE USUARIOS REFUGIO ---
+    @GetMapping("/usuarios/refugio/nuevo")
+    public String formularioNuevoUsuarioRefugio(Model model) {
+        Usuario usuario = new Usuario();
+        usuario.setActivo(true);
+        model.addAttribute("usuario", usuario);
+        return "admin/usuarios/refugio-form";
+    }
+
+    @GetMapping("/usuarios/refugio/editar/{id}")
+    public String formularioEditarUsuarioRefugio(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.buscarPorId(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        model.addAttribute("usuario", usuario);
+        return "admin/usuarios/refugio-form";
+    }
+
+    @PostMapping("/usuarios/refugio/guardar")
+    public String guardarUsuarioRefugio(@ModelAttribute Usuario usuario,
+                                        @RequestParam(required = false) String password,
+                                        RedirectAttributes flash) {
+        try {
+            // Si es nuevo usuario
+            if (usuario.getIdUsuario() == null) {
+                // Validar email único
+                if (usuarioService.existeEmail(usuario.getEmail())) {
+                    flash.addFlashAttribute("error", "El email ya está registrado");
+                    return "redirect:/admin/usuarios";
+                }
+
+                // Validar contraseña
+                if (password == null || password.length() < 6) {
+                    flash.addFlashAttribute("error", "La contraseña debe tener al menos 6 caracteres");
+                    return "redirect:/admin/usuarios";
+                }
+
+                // Encriptar contraseña
+                usuario.setPassword(passwordEncoder.encode(password));
+
+                // Asignar rol REFUGIO
+                Rol rolRefugio = rolRepository.findByNombreRol("ROLE_REFUGIO")
+                        .orElseThrow(() -> new RuntimeException("Rol REFUGIO no encontrado"));
+                Set<Rol> roles = new HashSet<>();
+                roles.add(rolRefugio);
+                usuario.setRoles(roles);
+            } else {
+                // Si está editando, mantener la contraseña anterior si no se proporciona una nueva
+                Usuario usuarioExistente = usuarioService.buscarPorId(usuario.getIdUsuario())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                if (password != null && !password.isEmpty() && password.length() >= 6) {
+                    usuario.setPassword(passwordEncoder.encode(password));
+                } else {
+                    usuario.setPassword(usuarioExistente.getPassword());
+                }
+                usuario.setRoles(usuarioExistente.getRoles());
+            }
+
+            usuarioService.guardar(usuario);
+            flash.addFlashAttribute("success", "Usuario refugio guardado exitosamente");
+        } catch (Exception e) {
+            flash.addFlashAttribute("error", "Error al guardar usuario: " + e.getMessage());
+        }
+        return "redirect:/admin/usuarios";
     }
 
     // --- GESTIÓN DE REFUGIOS ---
