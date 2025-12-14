@@ -1,0 +1,143 @@
+.user-edit-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: var(--radius-xl);
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border: 3px solid white;
+}
+
+.user-meta {
+    flex: 1;
+}
+
+.user-meta h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.user-meta .user-email {
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.roles-section {
+    background: var(--gray-50);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    margin: 2rem 0;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.role-checkbox {
+    position: relative;
+}
+
+.role-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.role-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: white;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.role-checkbox input[type="checkbox"]:checked + .role-label {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.role-icon {
+    font-size: 1.5rem;
+}
+
+.role-info {
+    flex: 1;
+}
+
+.role-name {
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.role-description {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.danger-zone {
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.danger-zone h3 {
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.danger-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-card {
+    flex: 1;
+    min-width: 200px;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid #fecaca;
+}
+
+.action-card h4 {
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+}
+
+.action-card p {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+}

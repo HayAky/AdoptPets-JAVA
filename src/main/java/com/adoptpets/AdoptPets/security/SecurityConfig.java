@@ -77,7 +77,6 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/login?expired")
                         .maximumSessions(1)
                         .expiredUrl("/login?expired")
                 )

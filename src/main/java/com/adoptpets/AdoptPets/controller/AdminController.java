@@ -7,6 +7,7 @@ import com.adoptpets.AdoptPets.model.enums.EstadoAdopcion;
 import com.adoptpets.AdoptPets.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class AdminController {
 
     @Autowired
     private RefugioService refugioService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -221,12 +225,25 @@ public class AdminController {
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Resetear a contraseña por defecto
-            usuario.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("123456"));
+            usuario.setPassword(passwordEncoder.encode("123456"));
             usuarioService.guardar(usuario);
 
             flash.addFlashAttribute("success", "Contraseña reseteada a: 123456");
         } catch (Exception e) {
             flash.addFlashAttribute("error", "Error al resetear contraseña: " + e.getMessage());
+        }
+        return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/usuarios/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes flash) {
+        try {
+            // Llamamos al método que ya tienes en tu servicio
+            usuarioService.eliminar(id);
+            flash.addFlashAttribute("success", "Usuario eliminado exitosamente");
+        } catch (Exception e) {
+            // Capturamos errores (por ejemplo, si el usuario tiene adopciones vinculadas y la BD impide borrarlo)
+            flash.addFlashAttribute("error", "No se puede eliminar el usuario. Es probable que tenga solicitudes o registros asociados.");
         }
         return "redirect:/admin/usuarios";
     }
@@ -244,6 +261,7 @@ public class AdminController {
             flash.addFlashAttribute("error", "Error al actualizar usuario: " + e.getMessage());
         }
         return "redirect:/admin/usuarios";
+
     }
 
     // --- GESTIÓN DE REFUGIOS ---

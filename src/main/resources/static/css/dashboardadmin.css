@@ -41,21 +41,6 @@ body {
     gap: 15px;
 }
 
-.logout-btn {
-    background: #ef4444;
-    color: white;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.logout-btn:hover {
-    background: #dc2626;
-}
 
 .stats-grid {
     display: grid;
