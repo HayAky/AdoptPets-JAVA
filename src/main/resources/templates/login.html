@@ -6,8 +6,7 @@
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <title>Iniciar sesión - AdoptPets</title>
     <link th:href="@{/css/login.css}" rel="stylesheet">
-    <link th:href="@{/css/header.css}" rel="stylesheet">
-    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
@@ -43,6 +42,6 @@
         <img th:src="@{/img/Perro_viento.png}" alt="Perro feliz">
     </div>
 </section>
-<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer-old :: footer}"></div>
 </body>
 </html>

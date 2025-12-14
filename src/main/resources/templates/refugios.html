@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Refugios - AdoptPets</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/masmascotas.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -178,14 +179,11 @@
     </style>
 </head>
 <body>
-<div th:replace="~{fragments/headeradmin-old :: ~{headeradmin}}"></div>
+<div th:replace="~{fragments/header :: ~{header}}"></div>
 <div class="admin-layout">
     <main class="main-content">
         <div class="page-header">
-            <h1>Gestión de Refugios</h1>
-            <a th:href="@{/admin/refugios/nuevo}" class="btn btn-primary">
-                ➕ Nuevo Refugio
-            </a>
+            <h1>Refugios</h1>
         </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}">
@@ -237,11 +235,7 @@
                 </p>
 
                 <div class="refugio-actions">
-                    <a th:href="@{/admin/refugios/editar/{id}(id=${refugio.idRefugio})}"
-                       class="btn btn-primary" style="flex: 1;">
-                        ✏️ Editar
-                    </a>
-                    <a th:href="@{/admin/mascotas?refugio={id}(id=${refugio.idRefugio})}"
+                    <a th:href="@{/mascotas.html}"
                        class="btn btn-secondary" style="flex: 1;">
                         🐶 Ver Mascotas
                     </a>

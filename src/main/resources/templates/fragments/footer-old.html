@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<body>
-
-<!-- ============================================
-     FOOTER UNIFICADO - Se adapta según el rol
-     ============================================ -->
-
-<!-- FOOTER COMPLETO (Público y Adoptantes) -->
-<footer th:fragment="footer" sec:authorize="isAnonymous() or hasRole('ADOPTANTE') or hasRole('REFUGIO')" class="site-footer">
+<footer th:fragment="~{footer-old}" class="site-footer">
     <div class="footer-container">
 
         <div class="footer-col">
-            <a th:href="@{/main}" class="footer-logo">Adopt<span>Pets</span></a>
+            <a href="#" class="footer-logo">Adopt<span>Pets</span></a>
             <p>Ayudamos a conectar mascotas adorables con familias amorosas. Tu nuevo mejor amigo te está esperando.</p>
 
             <div class="social-links">
@@ -26,11 +16,11 @@
         <div class="footer-col">
             <h3>Explorar</h3>
             <ul class="footer-links">
-                <li><a th:href="@{/main}">Inicio</a></li>
-                <li><a th:href="@{/adoptar}">Adoptar</a></li>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Adoptar</a></li>
                 <li><a href="#">Refugios</a></li>
                 <li><a href="#">Historias de éxito</a></li>
-                <li><a th:href="@{/contactenos}">Contáctanos</a></li>
+                <li><a href="#">Contáctanos</a></li>
             </ul>
         </div>
 
@@ -49,19 +39,3 @@
         <p>&copy; 2024 AdoptPets. Todos los derechos reservados.</p>
     </div>
 </footer>
-
-<!-- FOOTER SIMPLIFICADO (Admin) -->
-<footer th:fragment="footer" sec:authorize="hasRole('ADMIN')" class="site-footer admin-footer">
-    <div class="footer-container">
-        <div class="footer-col">
-            <a th:href="@{/main}" class="footer-logo">Adopt<span>Pets</span></a>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <p>&copy; 2024 AdoptPets. Todos los derechos reservados.</p>
-    </div>
-</footer>
-
-</body>
-</html>

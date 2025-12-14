@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Mascota - AdoptPets</title>
-    <link th:href="@{/css/headeradmin.css}" rel="stylesheet">
-    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/formulario.css}" rel="stylesheet">
 </head>
 <body>
-<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+<div th:replace="~{fragments/headeradmin-old :: ~{headeradmin}}"></div>
 <div class="admin-layout">
 
     <main class="main-content">
@@ -151,7 +150,7 @@
         </div>
     </main>
 </div>
-<div th:replace="~{fragments/footeradmin :: ~{footeradmin}}"></div>
+<div th:replace="~{fragments/footeradmin-old :: ~{footeradmin}}"></div>
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

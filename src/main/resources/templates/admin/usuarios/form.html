@@ -8,10 +8,9 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
 </head>
 <body>
-<div th:replace="~{fragments/headeradmin :: ~{headeradmin}}"></div>
+<div th:replace="~{fragments/headeradmin-old :: ~{headeradmin}}"></div>
 <div class="content-area">
     <div class="user-edit-container">
-        <!-- Header de usuario -->
         <div class="user-header">
             <div class="user-avatar" th:text="${usuario.nombre.substring(0,1).toUpperCase()}">U</div>
             <div class="user-meta">

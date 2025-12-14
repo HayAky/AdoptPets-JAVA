@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Contáctanos</title>
-
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <style>
         body {
             margin: 0;
@@ -13,12 +13,6 @@
             background-position: center;
             font-family: Arial, sans-serif;
             color: green;
-        }
-
-        /* Logo solo */
-        .logo-container {
-            text-align: center;
-            margin-top: 20px;
         }
 
         .logo-container img {
@@ -122,11 +116,7 @@
 
 </head>
 <body>
-
-<!-- LOGO AdoptPets solo -->
-<div class="logo-container">
-    <img src="/img/AdoptPets.png" alt="AdoptPets">
-</div>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <div class="form-container">
     <h2>Contáctanos</h2>

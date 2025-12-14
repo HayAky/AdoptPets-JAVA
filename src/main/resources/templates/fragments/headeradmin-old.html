@@ -1,15 +1,22 @@
-<header th:fragment="~{headeradmin}">
+<header th:fragment="~{headeradmin-old}" class="header-base header-admin">
     <div class="contenedor" id="headerup">
         <a th:href="@{/main}" class="logo">
             <img th:src="@{/img/AdoptPets (1).png}" alt="logo de la pagina">
         </a>
         <nav>
-            <div class="user-info">
-                <span>👤 Admin</span>
+            <div class="user-menu">
+                <button class="user-button" type="button">
+                    Admin ▾
+                </button>
+
+                <div class="user-dropdown">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="logout-btn">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
             </div>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="logout-btn">Cerrar Sesión</button>
-            </form>
         </nav>
     </div>
 

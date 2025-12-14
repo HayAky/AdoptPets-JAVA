@@ -70,6 +70,12 @@ public class MainController {
         return "mascotas";
     }
 
+    @GetMapping("/refugios")
+    public String verRefugiosPublicos(Model model) {
+        model.addAttribute("refugios", refugioService.listarActivos());
+        return "refugios";
+    }
+
     @GetMapping("/contacto")
     public String contacto(){
         return "contacto";
